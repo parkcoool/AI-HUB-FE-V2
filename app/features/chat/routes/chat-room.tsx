@@ -1,6 +1,7 @@
-import { AppSidebar } from "~/components/app-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
-import type { ChatRoom } from "~/types/shared";
+import type { ChatRoom } from "~/features/chat/types";
+
+import { AppSidebar } from "../components/app-sidebar";
 
 import type { Route } from "./+types/chat-room";
 

@@ -1,7 +1,6 @@
 import logoSrc from "~/assets/logo.png";
+import { Button } from "~/components/ui/button";
 import { Field } from "~/components/ui/field";
-
-import { Button } from "./ui/button";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   return (

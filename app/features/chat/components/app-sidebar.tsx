@@ -2,6 +2,7 @@ import { ChartLine, Edit, MessageCirclePlus, MoreHorizontal, Settings, Trash } f
 import * as React from "react";
 import { Link } from "react-router";
 
+import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,9 +21,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import type { ChatRoom } from "~/types/shared";
-
-import { Button } from "./ui/button";
+import type { ChatRoom } from "~/features/chat/types";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   activeRoomId?: string;
