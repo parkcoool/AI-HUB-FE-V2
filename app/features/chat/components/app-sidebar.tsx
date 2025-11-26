@@ -1,15 +1,7 @@
-import { ChartLine, Edit, MessageCirclePlus, MoreHorizontal, Settings, Trash } from "lucide-react";
+import { ChartLine, MessageCirclePlus, Settings } from "lucide-react";
 import * as React from "react";
 import { Link } from "react-router";
 
-import { Button } from "~/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +14,8 @@ import {
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
 import type { ChatRoom } from "~/features/chat/types";
+
+import { ChatRoomMenuItem } from "./chat-room-menu-item";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   activeRoomId?: string;
@@ -62,37 +56,11 @@ export function AppSidebar({ activeRoomId, chatRooms, ...props }: AppSidebarProp
             <SidebarGroupContent>
               <SidebarMenu>
                 {chatRooms.map((chatRoom) => (
-                  <SidebarMenuItem className="relative" key={chatRoom.roomId}>
-                    {/* 버튼 */}
-                    <SidebarMenuButton
-                      asChild
-                      isActive={activeRoomId === chatRoom.roomId}
-                      className="flex justify-between p-5"
-                    >
-                      <Link to={`/room/${chatRoom.roomId}`}>{chatRoom.title}</Link>
-                    </SidebarMenuButton>
-
-                    {/* 드롭다운 메뉴 */}
-                    <div className="absolute right-1 z-10 top-0 bottom-0 flex items-center">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem>
-                            <Edit />
-                            <DropdownMenuLabel>제목 수정</DropdownMenuLabel>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Trash />
-                            <DropdownMenuLabel>삭제</DropdownMenuLabel>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </SidebarMenuItem>
+                  <ChatRoomMenuItem
+                    chatRoom={chatRoom}
+                    key={chatRoom.roomId}
+                    isActive={activeRoomId === chatRoom.roomId}
+                  />
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
