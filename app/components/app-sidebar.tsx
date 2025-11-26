@@ -3,6 +3,13 @@ import * as React from "react";
 import { Link } from "react-router";
 
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -14,15 +21,9 @@ import {
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
 import type { ChatRoom } from "~/types/shared";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 
 import { Button } from "./ui/button";
+
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   activeRoomId?: string;
   chatRooms: ChatRoom[];

@@ -1,7 +1,8 @@
 import { AppSidebar } from "~/components/app-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
-import type { Route } from "./+types/chat-room";
 import type { ChatRoom } from "~/types/shared";
+
+import type { Route } from "./+types/chat-room";
 
 const chatRooms: ChatRoom[] = [
   {
