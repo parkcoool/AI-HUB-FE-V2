@@ -2,6 +2,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "~/components/ui/s
 import type { ChatRoom } from "~/features/chat/types";
 
 import { AppSidebar } from "../components/app-sidebar";
+import { Chat } from "../components/chat";
 
 import type { Route } from "./+types/chat-room";
 
@@ -44,7 +45,7 @@ export default function ChatRoomPage({ params }: Route.LoaderArgs) {
           <SidebarTrigger className="-ml-1" />
         </header>
 
-        <div className="flex flex-1"></div>
+        <Chat />
       </SidebarInset>
     </SidebarProvider>
   );
