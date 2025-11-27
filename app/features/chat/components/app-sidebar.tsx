@@ -1,4 +1,4 @@
-import { ChartLine, MessageCirclePlus, Settings } from "lucide-react";
+import { MessageCirclePlus } from "lucide-react";
 import * as React from "react";
 import { Link } from "react-router";
 
@@ -16,6 +16,7 @@ import {
 import type { ChatRoom } from "~/features/chat/types";
 
 import { ChatRoomMenuItem } from "./chat-room-menu-item";
+import { NavUser } from "./nav-user";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   activeRoomId?: string;
@@ -32,16 +33,8 @@ export function AppSidebar({ activeRoomId, chatRooms, ...props }: AppSidebarProp
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={false} className="p-5">
-                  <Link to="/room">
+                  <Link to="/chat">
                     <MessageCirclePlus />새 채팅
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={false} className="p-5">
-                  <Link to="/usage">
-                    <ChartLine />
-                    사용량
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -70,14 +63,7 @@ export function AppSidebar({ activeRoomId, chatRooms, ...props }: AppSidebarProp
 
       {/* 푸터 */}
       <SidebarFooter>
-        <SidebarMenuItem>
-          <SidebarMenuButton asChild isActive={false} className="p-5">
-            <Link to="/settings">
-              <Settings />
-              설정
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        <NavUser username="User Name" email="user@example.com" />
       </SidebarFooter>
     </Sidebar>
   );
