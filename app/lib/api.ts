@@ -1,5 +1,8 @@
-import axios from "axios";
-import { unknown, z } from "zod";
+import axios, { AxiosError } from "axios";
+import createAuthRefreshInterceptor, {
+  type AxiosAuthRefreshRequestConfig,
+} from "axios-auth-refresh";
+import { z } from "zod";
 
 import { AppError, ServerError } from "~/lib/error";
 import { ServerErrorCodeSchema } from "~/types/error-code";
@@ -16,14 +19,17 @@ const CommonResponse = z.union([
     detail: z.object({
       code: ServerErrorCodeSchema,
       message: z.string(),
-      details: unknown().optional(),
+      details: z.unknown().optional(),
     }),
     timestamp: z.string(),
   }),
 ]);
 
+// axios 인스턴스 생성
 export const api = axios.create({
-  baseURL: process.env.VITE_API_BASE_URL,
+  baseURL: `${process.env.VITE_API_BASE_URL}/api/v1`,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 
   // 공통 응답 변환기
   transformResponse: (data) => {
@@ -48,3 +54,17 @@ export const api = axios.create({
     }
   },
 });
+
+// 인증 토큰 갱신 함수
+const refreshAuth = async () => {
+  const config: AxiosAuthRefreshRequestConfig = { withCredentials: true, skipAuthRefresh: true };
+  await api.post(`${process.env.VITE_API_BASE_URL}/api/v1/token/refresh`, undefined, config);
+};
+
+createAuthRefreshInterceptor(
+  api,
+  async (error) => {
+    if (error instanceof AxiosError && error.response?.status === 401) await refreshAuth();
+  },
+  { pauseInstanceWhileRefreshing: true }
+);
