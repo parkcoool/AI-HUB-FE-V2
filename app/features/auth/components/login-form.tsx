@@ -2,6 +2,8 @@ import logoSrc from "~/assets/logo.png";
 import { Button } from "~/components/ui/button";
 import { Field } from "~/components/ui/field";
 
+import { loginWithKakao } from "../utils/loginWihtKakao";
+
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div className={className} {...props}>
@@ -19,7 +21,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
         {/* 로그인 버튼 */}
         <Field>
-          <Button className="w-full bg-[#fee500] hover:bg-[#ddc400]" size="lg">
+          <Button
+            className="w-full bg-[#fee500] hover:bg-[#ddc400]"
+            size="lg"
+            onClick={loginWithKakao}
+          >
             <svg version="1.1" viewBox="0 0 99.618 92.147" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <clipPath id="a">
