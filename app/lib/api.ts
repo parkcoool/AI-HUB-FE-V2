@@ -58,7 +58,7 @@ export const api = axios.create({
 // 인증 토큰 갱신 함수
 const refreshAuth = async () => {
   const config: AxiosAuthRefreshRequestConfig = { withCredentials: true, skipAuthRefresh: true };
-  await api.post(`${process.env.VITE_API_BASE_URL}/api/v1/token/refresh`, undefined, config);
+  await api.post("/token/refresh", undefined, config);
 };
 
 createAuthRefreshInterceptor(

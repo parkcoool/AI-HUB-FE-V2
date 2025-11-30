@@ -23,25 +23,29 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { SidebarMenuButton, SidebarMenuItem } from "~/components/ui/sidebar";
 
-import type { ChatRoom } from "../types";
-
 interface ChatRoomMenuItemProps extends React.ComponentProps<typeof SidebarMenuItem> {
-  chatRoom: ChatRoom;
+  roomId: string;
+  title: string;
   isActive?: boolean;
 }
 
-export function ChatRoomMenuItem({ chatRoom, isActive = false, ...props }: ChatRoomMenuItemProps) {
+export function ChatRoomMenuItem({
+  roomId,
+  title,
+  isActive = false,
+  ...props
+}: ChatRoomMenuItemProps) {
   const [showRenameDialog, setShowRenameDialog] = useState(false);
-  const [title, setTitle] = useState(chatRoom.title);
+  const [newTitle, setNewTitle] = useState(title);
 
   // 저장 버튼 비활성화 여부
-  const isSaveDisabled = title.trim().length === 0 || title === chatRoom.title;
+  const isSaveDisabled = newTitle.trim().length === 0 || newTitle === title;
 
   return (
     <SidebarMenuItem className="relative" {...props}>
       {/* 버튼 */}
       <SidebarMenuButton asChild isActive={isActive} className="flex justify-between p-5">
-        <Link to={`/chat/${chatRoom.roomId}`}>{chatRoom.title}</Link>
+        <Link to={`/chat/${roomId}`}>{title}</Link>
       </SidebarMenuButton>
 
       {/* 드롭다운 메뉴 */}
@@ -79,7 +83,7 @@ export function ChatRoomMenuItem({ chatRoom, isActive = false, ...props }: ChatR
               <Input
                 id="chat-room-title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => setNewTitle(e.target.value)}
               />
             </div>
 

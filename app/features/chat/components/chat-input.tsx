@@ -13,7 +13,8 @@ import {
   PromptInputModelSelectItem,
   PromptInputSubmit,
 } from "~/components/ui/shadcn-io/ai/prompt-input";
-import type { Model } from "~/features/model/types";
+
+import type { Model } from "../types";
 
 interface ChatInputProps {
   inputValue: string;

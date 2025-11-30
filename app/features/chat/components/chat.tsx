@@ -4,7 +4,8 @@ import logoSrc from "~/assets/logo.png";
 import { Conversation, ConversationContent } from "~/components/ui/shadcn-io/ai/conversation";
 import { Message, MessageAvatar, MessageContent } from "~/components/ui/shadcn-io/ai/message";
 import { Spinner } from "~/components/ui/spinner";
-import type { Model } from "~/features/model/types";
+
+import type { Model } from "../types";
 
 import { ChatInput } from "./chat-input";
 

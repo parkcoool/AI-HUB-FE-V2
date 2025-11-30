@@ -13,17 +13,19 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import type { ChatRoom } from "~/features/chat/types";
+
+import { useListChatRoomsQuery } from "../hooks/use-list-chat-rooms-query";
 
 import { ChatRoomMenuItem } from "./chat-room-menu-item";
 import { NavUser } from "./nav-user";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   activeRoomId?: string;
-  chatRooms: ChatRoom[];
 }
 
-export function AppSidebar({ activeRoomId, chatRooms, ...props }: AppSidebarProps) {
+export function AppSidebar({ activeRoomId, ...props }: AppSidebarProps) {
+  const { data: chatRooms } = useListChatRoomsQuery({});
+
   return (
     <Sidebar {...props}>
       <SidebarContent>
@@ -43,14 +45,15 @@ export function AppSidebar({ activeRoomId, chatRooms, ...props }: AppSidebarProp
         </SidebarGroup>
 
         {/* 채팅 방 목록 */}
-        {chatRooms.length > 0 && (
+        {chatRooms?.content && (
           <SidebarGroup>
             <SidebarGroupLabel>채팅</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {chatRooms.map((chatRoom) => (
+                {chatRooms.content.map((chatRoom) => (
                   <ChatRoomMenuItem
-                    chatRoom={chatRoom}
+                    title={chatRoom.title}
+                    roomId={chatRoom.roomId}
                     key={chatRoom.roomId}
                     isActive={activeRoomId === chatRoom.roomId}
                   />
