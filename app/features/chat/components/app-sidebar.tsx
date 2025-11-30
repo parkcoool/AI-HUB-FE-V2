@@ -1,5 +1,5 @@
 import { MessageCirclePlus } from "lucide-react";
-import * as React from "react";
+import { Suspense } from "react";
 import { Link } from "react-router";
 
 import {
@@ -8,15 +8,13 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
+import { Spinner } from "~/components/ui/spinner";
 
-import { useListChatRoomsQuery } from "../hooks/use-list-chat-rooms-query";
-
-import { ChatRoomMenuItem } from "./chat-room-menu-item";
+import { ChatRoomList } from "./chat-room-list";
 import { NavUser } from "./nav-user";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -24,8 +22,6 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ activeRoomId, ...props }: AppSidebarProps) {
-  const { data: chatRooms } = useListChatRoomsQuery({});
-
   return (
     <Sidebar {...props}>
       <SidebarContent>
@@ -45,23 +41,15 @@ export function AppSidebar({ activeRoomId, ...props }: AppSidebarProps) {
         </SidebarGroup>
 
         {/* 채팅 방 목록 */}
-        {chatRooms?.content && (
-          <SidebarGroup>
-            <SidebarGroupLabel>채팅</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {chatRooms.content.map((chatRoom) => (
-                  <ChatRoomMenuItem
-                    title={chatRoom.title}
-                    roomId={chatRoom.roomId}
-                    key={chatRoom.roomId}
-                    isActive={activeRoomId === chatRoom.roomId}
-                  />
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
+        <Suspense
+          fallback={
+            <div className="flex h-full w-full items-center justify-center">
+              <Spinner className="size-8" />
+            </div>
+          }
+        >
+          <ChatRoomList activeRoomId={activeRoomId} />
+        </Suspense>
       </SidebarContent>
 
       {/* 푸터 */}

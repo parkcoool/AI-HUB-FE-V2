@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { api } from "~/lib/api";
 
@@ -43,7 +43,7 @@ interface ListChatRoomsResponse {
 }
 
 export function useListChatRoomsQuery(params: ListChatRoomsParams) {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["chatRooms"],
     queryFn: async () => {
       const response = await api.get<ListChatRoomsResponse>("/chat-rooms", { params });
