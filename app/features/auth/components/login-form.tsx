@@ -7,7 +7,7 @@ import { loginWithKakao } from "../utils/loginWihtKakao";
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div className={className} {...props}>
-      <form className="flex flex-col gap-8">
+      <form className="flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
         {/* 로고 및 타이틀 */}
         <div className="flex flex-col items-center gap-2 text-center">
           <a href="#">
