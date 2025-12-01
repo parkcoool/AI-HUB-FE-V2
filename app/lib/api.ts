@@ -7,7 +7,7 @@ import { z } from "zod";
 import { AppError, ServerError } from "~/lib/error";
 import { ServerErrorCodeSchema } from "~/types/error-code";
 
-const CommonResponse = z.union([
+const CommonResponseSchema = z.union([
   z.object({
     success: z.literal(true),
     detail: z.unknown(),
@@ -34,8 +34,8 @@ export const api = axios.create({
   // 공통 응답 변환기
   transformResponse: (data) => {
     try {
-      const parsedData = CommonResponse.parse(data);
-      if (!parsedData.success)
+      const parsedData = CommonResponseSchema.parse(JSON.parse(data));
+      if (!parsedData.success && parsedData.detail.code !== "AUTHENTICATION_FAILED")
         throw new ServerError(
           parsedData.detail.code,
           parsedData.detail.message,
@@ -44,6 +44,7 @@ export const api = axios.create({
       return parsedData.detail;
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.log(data);
         throw new AppError(
           "INVALID_RESPONSE_FORMAT",
           "서버에서 올바르지 않은 형식의 응답이 반환되었습니다.",
