@@ -11,7 +11,7 @@ export function useLogoutMutation() {
       const response = await api.post<LogoutResponse>("/auth/logout");
       return response.data;
     },
-    onMutate: async (_variables, context) => {
+    onSuccess: async (_data, _variables, _onMutateResult, context) => {
       context.client.invalidateQueries({ queryKey: ["getUser"] });
     },
   });
