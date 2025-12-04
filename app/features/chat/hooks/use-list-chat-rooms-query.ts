@@ -8,8 +8,8 @@ interface ListChatRoomsParams {
 }
 
 interface ListChatRoomsResponse {
-  totalElements: number;
   totalPages: number;
+  totalElements: number;
   size: number;
   content: {
     roomId: string;
@@ -19,8 +19,6 @@ interface ListChatRoomsResponse {
     createdAt: string;
   }[];
   number: number;
-  first: boolean;
-  last: boolean;
   numberOfElements: number;
   sort: {
     empty: boolean;
@@ -39,6 +37,8 @@ interface ListChatRoomsResponse {
     pageSize: number;
     unpaged: boolean;
   };
+  first: boolean;
+  last: boolean;
   empty: boolean;
 }
 
