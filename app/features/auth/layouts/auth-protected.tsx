@@ -1,19 +1,28 @@
+import { AxiosError } from "axios";
+import { Suspense } from "react";
 import { Navigate, Outlet } from "react-router";
 
-import { Spinner } from "~/components/ui/spinner";
-
+import { AuthLoading } from "../components/auth-loading";
 import { useGetUserQuery } from "../hooks/use-get-user-query";
 
-export default function AuthProtectedLayout() {
-  const { isLoading, error } = useGetUserQuery();
+import type { Route } from "./+types/auth-protected";
 
-  if (isLoading)
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <Spinner />
-      </div>
-    );
-  if (error) return <Navigate to="/" replace />;
-
+function Content() {
+  useGetUserQuery();
   return <Outlet />;
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  if (error instanceof AxiosError && error.response?.status === 401) {
+    return <Navigate to="/" replace />;
+  }
+  throw error;
+}
+
+export default function AuthProtectedLayout() {
+  return (
+    <Suspense fallback={<AuthLoading />}>
+      <Content />
+    </Suspense>
+  );
 }

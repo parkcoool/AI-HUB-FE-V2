@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
 import { Spinner } from "~/components/ui/spinner";
+import { useGetUserQuery } from "~/features/auth/hooks/use-get-user-query";
 
 import { ChatRoomList } from "./chat-room-list";
 import { NavUser } from "./nav-user";
@@ -22,6 +23,8 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ activeRoomId, ...props }: AppSidebarProps) {
+  const { data: user } = useGetUserQuery();
+
   return (
     <Sidebar {...props}>
       <SidebarContent>
@@ -54,7 +57,7 @@ export function AppSidebar({ activeRoomId, ...props }: AppSidebarProps) {
 
       {/* 푸터 */}
       <SidebarFooter>
-        <NavUser username="User Name" email="user@example.com" />
+        <NavUser username={user.email} email={user.email} />
       </SidebarFooter>
     </Sidebar>
   );

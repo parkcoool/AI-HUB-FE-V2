@@ -49,5 +49,6 @@ export function useListChatRoomsQuery(params: ListChatRoomsParams) {
       const response = await api.get<ListChatRoomsResponse>("/chat-rooms", { params });
       return response.data;
     },
+    staleTime: 5 * 60 * 1000,
   });
 }

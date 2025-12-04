@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { api } from "~/lib/api";
 
@@ -10,13 +10,16 @@ interface GetUserResponse {
   createdAt: string;
 }
 
+export const getUserQueryOptions = queryOptions({
+  queryKey: ["getUser"],
+  queryFn: async () => {
+    const response = await api.get<GetUserResponse>("/users/me");
+    return response.data;
+  },
+  retry: false,
+  staleTime: Infinity,
+});
+
 export function useGetUserQuery() {
-  return useQuery({
-    queryKey: ["getUser"],
-    queryFn: async () => {
-      const response = await api.get<GetUserResponse>("/users/me");
-      return response.data;
-    },
-    retry: false,
-  });
+  return useSuspenseQuery(getUserQueryOptions);
 }
