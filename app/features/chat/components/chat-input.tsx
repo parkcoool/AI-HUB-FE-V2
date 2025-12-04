@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUp, PaperclipIcon } from "lucide-react";
+import { useState } from "react";
 
 import {
   PromptInput,
@@ -14,27 +15,28 @@ import {
   PromptInputSubmit,
 } from "~/components/ui/shadcn-io/ai/prompt-input";
 
+import { useListModelsQuery } from "../hooks/use-list-models-query";
 import type { Model } from "../types";
 
 interface ChatInputProps {
   inputValue: string;
   setInputValue: (value: string) => void;
   isTyping: boolean;
-  selectedModel: Model;
-  setSelectedModel: (model: Model) => void;
-  models: Model[];
   handleSubmit: (e: React.FormEvent) => void;
+  defaultModel?: Model;
 }
 
 export function ChatInput({
   inputValue,
   setInputValue,
   isTyping,
-  selectedModel,
-  setSelectedModel,
-  models,
   handleSubmit,
+  defaultModel,
 }: ChatInputProps) {
+  const { data: models } = useListModelsQuery();
+
+  const [selectedModel, setSelectedModel] = useState<Model>(defaultModel ?? models[0]);
+
   return (
     <PromptInput onSubmit={handleSubmit}>
       <PromptInputTextarea
