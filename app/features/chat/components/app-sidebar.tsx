@@ -57,7 +57,7 @@ export function AppSidebar({ activeRoomId, ...props }: AppSidebarProps) {
 
       {/* 푸터 */}
       <SidebarFooter>
-        <NavUser username={user.email} email={user.email} />
+        <NavUser username={user.username} email={user.email} />
       </SidebarFooter>
     </Sidebar>
   );
