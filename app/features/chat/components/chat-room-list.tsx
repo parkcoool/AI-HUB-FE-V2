@@ -7,6 +7,7 @@ interface ChatRoomListProps {
 }
 
 export function ChatRoomList({ activeRoomId }: ChatRoomListProps) {
+  // TODO: 페이징 처리
   const { data: chatRooms } = useListChatRoomsQuery({});
 
   return (

@@ -23,6 +23,8 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { SidebarMenuButton, SidebarMenuItem } from "~/components/ui/sidebar";
 
+import { useChangeChatRoomTitleMutation } from "../hooks/use-change-chat-room-title-mutation";
+
 interface ChatRoomMenuItemProps extends React.ComponentProps<typeof SidebarMenuItem> {
   roomId: string;
   title: string;
@@ -35,11 +37,20 @@ export function ChatRoomMenuItem({
   isActive = false,
   ...props
 }: ChatRoomMenuItemProps) {
+  const { mutate: changeTitle } = useChangeChatRoomTitleMutation({ roomId });
+
   const [showRenameDialog, setShowRenameDialog] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
 
   // 저장 버튼 비활성화 여부
   const isSaveDisabled = newTitle.trim().length === 0 || newTitle === title;
+
+  // 제목 변경 핸들러
+  const handleChangeTitle = () => {
+    if (isSaveDisabled) return;
+    changeTitle({ title: newTitle.trim() });
+    setShowRenameDialog(false);
+  };
 
   return (
     <SidebarMenuItem className="relative" {...props}>
@@ -82,7 +93,7 @@ export function ChatRoomMenuItem({
               </Label>
               <Input
                 id="chat-room-title"
-                value={title}
+                value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
               />
             </div>
@@ -91,7 +102,7 @@ export function ChatRoomMenuItem({
               <DialogClose asChild>
                 <Button variant="outline">취소</Button>
               </DialogClose>
-              <Button type="submit" disabled={isSaveDisabled}>
+              <Button type="submit" disabled={isSaveDisabled} onClick={handleChangeTitle}>
                 변경 사항 저장
               </Button>
             </DialogFooter>
