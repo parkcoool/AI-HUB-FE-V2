@@ -16,26 +16,35 @@ import {
 } from "~/components/ui/shadcn-io/ai/prompt-input";
 
 import { useListModelsQuery } from "../hooks/use-list-models-query";
+import { useSendMessageMutation } from "../hooks/use-send-message-mutation";
 import type { Model } from "../types";
 
 interface ChatInputProps {
-  inputValue: string;
-  setInputValue: (value: string) => void;
   isTyping: boolean;
-  handleSubmit: (e: React.FormEvent) => void;
   defaultModel?: Model;
+  activeRoomId?: string;
 }
 
-export function ChatInput({
-  inputValue,
-  setInputValue,
-  isTyping,
-  handleSubmit,
-  defaultModel,
-}: ChatInputProps) {
+export function ChatInput({ isTyping, defaultModel, activeRoomId }: ChatInputProps) {
   const { data: models } = useListModelsQuery();
+  const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessageMutation({
+    roomId: activeRoomId,
+  });
 
+  const [inputValue, setInputValue] = useState("");
   const [selectedModel, setSelectedModel] = useState<Model>(defaultModel ?? models[0]);
+
+  // 전송 비활성화 여부
+  const isSubmitDisabled = !inputValue.trim() || isTyping || isSendingMessage;
+
+  // 메시지 전송 핸들러
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitDisabled) return;
+
+    sendMessage({ message: inputValue, modelId: selectedModel.modelId });
+    setInputValue("");
+  };
 
   return (
     <PromptInput onSubmit={handleSubmit}>
@@ -90,10 +99,7 @@ export function ChatInput({
             </PromptInputModelSelectContent>
           </PromptInputModelSelect>
         </PromptInputTools>
-        <PromptInputSubmit
-          disabled={!inputValue.trim() || isTyping}
-          status={isTyping ? "streaming" : "ready"}
-        />
+        <PromptInputSubmit disabled={isSubmitDisabled} status={isTyping ? "streaming" : "ready"} />
       </PromptInputToolbar>
     </PromptInput>
   );

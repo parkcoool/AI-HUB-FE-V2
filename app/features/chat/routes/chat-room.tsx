@@ -17,7 +17,7 @@ export default function ChatRoomPage({ params }: Route.LoaderArgs) {
           <SidebarTrigger className="-ml-1" />
         </header>
 
-        <Chat />
+        <Chat activeRoomId={roomId} />
       </SidebarInset>
     </SidebarProvider>
   );

@@ -10,9 +10,9 @@ export interface ChatRoom {
 export interface Message {
   messageId: string;
   roomId: string;
-  role: string;
+  role: "user" | "assistant";
   content: string;
-  fileUrl: string;
+  fileUrl?: string;
   tokenCount: number;
   coinCount: number;
   modelId: number;
