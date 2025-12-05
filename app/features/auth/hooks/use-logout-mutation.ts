@@ -12,7 +12,7 @@ export function useLogoutMutation() {
       return response.data;
     },
     onSuccess: async (_data, _variables, _onMutateResult, context) => {
-      context.client.invalidateQueries({ queryKey: ["getUser"] });
+      context.client.invalidateQueries({ queryKey: ["get-user"] });
     },
   });
 }
