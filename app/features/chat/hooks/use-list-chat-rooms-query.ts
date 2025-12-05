@@ -44,7 +44,7 @@ interface ListChatRoomsResponse {
 
 export function useListChatRoomsQuery(params: ListChatRoomsParams) {
   return useSuspenseQuery({
-    queryKey: ["chatRooms"],
+    queryKey: ["chat-rooms"],
     queryFn: async () => {
       const response = await api.get<ListChatRoomsResponse>("/chat-rooms", { params });
       return response.data;

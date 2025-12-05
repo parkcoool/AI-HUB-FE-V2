@@ -11,7 +11,7 @@ interface GetUserResponse {
 }
 
 export const getUserQueryOptions = queryOptions({
-  queryKey: ["getUser"],
+  queryKey: ["get-user"],
   queryFn: async () => {
     const response = await api.get<GetUserResponse>("/users/me");
     return response.data;
