@@ -43,8 +43,7 @@ export const api = axios.create({
         );
       return parsedData.detail;
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        console.log(data);
+      if (error instanceof z.ZodError || error instanceof SyntaxError) {
         throw new AppError(
           "INVALID_RESPONSE_FORMAT",
           "서버에서 올바르지 않은 형식의 응답이 반환되었습니다.",
@@ -59,7 +58,11 @@ export const api = axios.create({
 // 인증 토큰 갱신 함수
 const refreshAuth = async () => {
   const config: AxiosAuthRefreshRequestConfig = { withCredentials: true, skipAuthRefresh: true };
-  await api.post("/token/refresh", undefined, config);
+  try {
+    await api.post("/token/refresh", undefined, config);
+  } catch (error) {
+    throw new AppError("TOKEN_REFRESH_FAILED", "인증 토큰 갱신에 실패했습니다.", error);
+  }
 };
 
 createAuthRefreshInterceptor(

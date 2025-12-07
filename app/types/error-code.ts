@@ -22,5 +22,10 @@ export const ServerErrorCodeSchema = z.enum([
 ]);
 export type ServerErrorCode = z.infer<typeof ServerErrorCodeSchema>;
 
-export const AppErrorCodeSchema = z.enum(["NETWORK_ERROR", "TIMEOUT", "INVALID_RESPONSE_FORMAT"]);
+export const AppErrorCodeSchema = z.enum([
+  "NETWORK_ERROR",
+  "TIMEOUT",
+  "INVALID_RESPONSE_FORMAT",
+  "TOKEN_REFRESH_FAILED",
+]);
 export type AppErrorCode = z.infer<typeof AppErrorCodeSchema>;

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { Navigate, Outlet } from "react-router";
+
+import { AppError } from "~/lib/error";
 
 import { AuthLoading } from "../components/auth-loading";
 import { getUserQueryOptions } from "../hooks/use-get-user-query";
@@ -13,7 +14,7 @@ function Content() {
   if (isLoading) return <AuthLoading />;
 
   if (error) {
-    if (error instanceof AxiosError && error.response?.status === 401) {
+    if (error instanceof AppError && error.code === "TOKEN_REFRESH_FAILED") {
       return <Outlet />;
     }
     throw error;
@@ -25,7 +26,7 @@ function Content() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  if (error instanceof AxiosError && error.response?.status === 401) {
+  if (error instanceof AppError && error.code === "TOKEN_REFRESH_FAILED") {
     return <Outlet />;
   }
   throw error;
