@@ -10,14 +10,14 @@ export default function ChatRoomPage({ params }: Route.LoaderArgs) {
 
   return (
     <SidebarProvider>
-      <AppSidebar activeRoomId={roomId} />
+      <AppSidebar roomId={roomId} />
 
       <SidebarInset>
-        <header className="h-16 shrink-0 items-center gap-2 border-b px-4 flex md:hidden">
+        <header className="h-16 shrink-0 items-center gap-2 border-b px-4 flex md:hidden sticky top-0 bg-background z-10">
           <SidebarTrigger className="-ml-1" />
         </header>
 
-        <Chat activeRoomId={roomId} />
+        <Chat roomId={roomId} />
       </SidebarInset>
     </SidebarProvider>
   );

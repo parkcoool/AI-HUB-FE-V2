@@ -22,13 +22,13 @@ import type { Model } from "../types";
 interface ChatInputProps {
   isTyping: boolean;
   defaultModel?: Model;
-  activeRoomId?: string;
+  roomId?: string;
 }
 
-export function ChatInput({ isTyping, defaultModel, activeRoomId }: ChatInputProps) {
+export function ChatInput({ isTyping, defaultModel, roomId }: ChatInputProps) {
   const { data: models } = useListModelsQuery();
   const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessageMutation({
-    roomId: activeRoomId,
+    roomId: roomId,
   });
 
   const [inputValue, setInputValue] = useState("");

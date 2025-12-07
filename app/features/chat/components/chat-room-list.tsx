@@ -3,10 +3,10 @@ import { useListChatRoomsQuery } from "../hooks/use-list-chat-rooms-query";
 import { ChatRoomMenuItem } from "./chat-room-menu-item";
 
 interface ChatRoomListProps {
-  activeRoomId?: string;
+  roomId?: string;
 }
 
-export function ChatRoomList({ activeRoomId }: ChatRoomListProps) {
+export function ChatRoomList({ roomId }: ChatRoomListProps) {
   // TODO: 페이징 처리
   const { data: chatRooms } = useListChatRoomsQuery({});
 
@@ -17,7 +17,7 @@ export function ChatRoomList({ activeRoomId }: ChatRoomListProps) {
           title={chatRoom.title}
           roomId={chatRoom.roomId}
           key={chatRoom.roomId}
-          isActive={activeRoomId === chatRoom.roomId}
+          isActive={roomId === chatRoom.roomId}
         />
       ))}
     </>

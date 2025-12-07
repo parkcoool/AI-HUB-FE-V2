@@ -19,10 +19,10 @@ import { ChatRoomList } from "./chat-room-list";
 import { NavUser } from "./nav-user";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  activeRoomId?: string;
+  roomId?: string;
 }
 
-export function AppSidebar({ activeRoomId, ...props }: AppSidebarProps) {
+export function AppSidebar({ roomId, ...props }: AppSidebarProps) {
   const { data: user } = useGetUserQuery();
 
   return (
@@ -51,7 +51,7 @@ export function AppSidebar({ activeRoomId, ...props }: AppSidebarProps) {
             </div>
           }
         >
-          <ChatRoomList activeRoomId={activeRoomId} />
+          <ChatRoomList roomId={roomId} />
         </Suspense>
       </SidebarContent>
 
