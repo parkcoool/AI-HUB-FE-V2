@@ -28,7 +28,7 @@ export function useChangeChatRoomTitleMutation({ roomId }: UseChangeChatRoomTitl
     },
     // TODO: useListChatRoomsQuery 페이지네이션 적용 후 optimistic update 적용
     onSuccess: async (_data, _variables, _onMutateResult, context) => {
-      context.client.invalidateQueries({ queryKey: ["getUser"] });
+      context.client.invalidateQueries({ queryKey: ["chat-rooms"] });
     },
   });
 }
