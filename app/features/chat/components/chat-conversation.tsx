@@ -23,9 +23,9 @@ export function ChatConversation({ roomId }: ChatConversationProps) {
   }
 
   return (
-    <div>
+    <div className="flex flex-1">
       {messages.length > 0 && (
-        <Conversation>
+        <Conversation className="flex flex-1">
           <ConversationContent>
             <InfiniteScroll
               dataLength={messages.length}
@@ -33,7 +33,7 @@ export function ChatConversation({ roomId }: ChatConversationProps) {
               next={fetchNextPage}
               hasMore={hasNextPage}
               loader={
-                <div className="w-full flex justify-center">
+                <div className="flex flex-1 justify-center">
                   <Spinner className="m-4 size-10" />
                 </div>
               }
