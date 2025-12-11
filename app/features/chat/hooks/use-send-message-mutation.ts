@@ -42,10 +42,10 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
           title: "New Chat",
           modelId: params.modelId,
         });
-        context.client.invalidateQueries({ queryKey: ["list-messages", ensuredRoomId] });
-
-        navigate(`/chat/${ensuredRoomId}`);
         ensuredRoomId = roomId;
+
+        context.client.invalidateQueries({ queryKey: ["chat-rooms"] });
+        navigate(`/chat/${ensuredRoomId}`);
       }
 
       // 사용자 메시지를 캐시에 추가
