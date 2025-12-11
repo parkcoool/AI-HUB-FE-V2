@@ -2,7 +2,7 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 
 import { api } from "~/lib/api";
 
-interface ListMessagesResponse {
+export interface ListMessagesResponse {
   totalPages: number;
   totalElements: number;
   size: number;

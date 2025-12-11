@@ -1,9 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
+import { SSE } from "sse.js";
 
-import { api } from "~/lib/api";
-
+import { addMessageCache } from "../helpers/add-message-cache";
 import { createChatRoom } from "../helpers/create-chat-room";
+import { modifyMessageCache } from "../helpers/modify-message-cache";
+
+import type { ListMessagesResponse } from "./use-list-messages-query";
+
+type Message = ListMessagesResponse["content"][number];
 
 interface SendMessageParams {
   message: string;
@@ -12,7 +17,12 @@ interface SendMessageParams {
   previousResponseId?: string;
 }
 
-type SendMessageResponse = void;
+interface CompletedEventData {
+  userMessageId: string;
+  aiResponseId: string;
+  inputTokens: number;
+  outputTokens: number;
+}
 
 interface UseSendMessageMutationParams {
   roomId?: string;
@@ -23,7 +33,7 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
 
   return useMutation({
     mutationKey: ["send-message"],
-    mutationFn: async (params: SendMessageParams) => {
+    mutationFn: async (params: SendMessageParams, context) => {
       let ensuredRoomId = roomId;
 
       // 새 채팅방인 경우
@@ -32,15 +42,107 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
           title: "New Chat",
           modelId: params.modelId,
         });
-        ensuredRoomId = roomId;
+        context.client.invalidateQueries({ queryKey: ["list-messages", ensuredRoomId] });
+
         navigate(`/chat/${ensuredRoomId}`);
+        ensuredRoomId = roomId;
       }
 
-      await api.post<SendMessageResponse>(`/messages/send/${ensuredRoomId}`, params, {
-        headers: { Accept: "*" },
-        onDownloadProgress: (event) => {
-          console.log(event.event);
+      // 사용자 메시지를 캐시에 추가
+      addMessageCache(
+        ensuredRoomId,
+        {
+          messageId: crypto.randomUUID(),
+          role: "user",
+          content: params.message,
+          tokenCount: 0,
+          coinCount: 0,
+          modelId: params.modelId,
+          createdAt: new Date().toISOString(),
         },
+        context.client
+      );
+
+      return new Promise<void>((resolve, reject) => {
+        const baseURL = import.meta.env.VITE_API_BASE_URL;
+        const url = `${baseURL}/api/v1/messages/send/${ensuredRoomId}`;
+
+        const message: Message = {
+          messageId: crypto.randomUUID(),
+          role: "assistant" as const,
+          content: "",
+          tokenCount: 0,
+          coinCount: 0,
+          modelId: params.modelId,
+          createdAt: new Date().toISOString(),
+        };
+
+        // SSE 연결 설정
+        const source = new SSE(url, {
+          headers: { "Content-Type": "application/json" },
+          payload: JSON.stringify(params),
+          method: "POST",
+          withCredentials: true,
+        });
+
+        // 1) started 이벤트
+        source.addEventListener("started", () => {
+          console.log("SSE connection started");
+
+          addMessageCache(ensuredRoomId, message, context.client);
+        });
+
+        // 2) delta 이벤트
+        source.addEventListener("delta", (event: { data: string }) => {
+          console.log("Delta received:", event.data);
+
+          message.content += event.data;
+          modifyMessageCache(
+            ensuredRoomId,
+            {
+              pageIndex: 0,
+              messageIndex: 0,
+            },
+            { content: message.content },
+            context.client
+          );
+        });
+
+        // 3) completed 이벤트
+        source.addEventListener("completed", (event: { data: string }) => {
+          console.log("Message completed:", event.data);
+
+          try {
+            const completedData: CompletedEventData = JSON.parse(event.data);
+
+            message.messageId = completedData.aiResponseId;
+            message.tokenCount = completedData.outputTokens;
+
+            modifyMessageCache(
+              ensuredRoomId,
+              { pageIndex: 0, messageIndex: 0 },
+              message,
+              context.client
+            );
+            modifyMessageCache(
+              ensuredRoomId,
+              { pageIndex: 0, messageIndex: 1 },
+              { messageId: completedData.userMessageId, tokenCount: completedData.inputTokens },
+              context.client
+            );
+
+            resolve();
+          } catch (error) {
+            reject(error);
+          } finally {
+            source.close();
+          }
+        });
+
+        source.addEventListener("error", (event: { data: string }) => {
+          source.close();
+          reject(new Error(`SSE connection error: ${event.data || "Unknown error"}`));
+        });
       });
     },
   });
