@@ -21,7 +21,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { SidebarMenuButton, SidebarMenuItem } from "~/components/ui/sidebar";
+import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "~/components/ui/sidebar";
 
 import { useChangeChatRoomTitleMutation } from "../hooks/use-change-chat-room-title-mutation";
 
@@ -37,6 +37,7 @@ export function ChatRoomMenuItem({
   isActive = false,
   ...props
 }: ChatRoomMenuItemProps) {
+  const { setOpenMobile } = useSidebar();
   const { mutate: changeTitle } = useChangeChatRoomTitleMutation({ roomId });
 
   const [showRenameDialog, setShowRenameDialog] = useState(false);
@@ -52,10 +53,20 @@ export function ChatRoomMenuItem({
     setShowRenameDialog(false);
   };
 
+  // 버튼 클릭 핸들러
+  const handleButtonClick = () => {
+    setOpenMobile(false);
+  };
+
   return (
     <SidebarMenuItem className="relative" {...props}>
       {/* 버튼 */}
-      <SidebarMenuButton asChild isActive={isActive} className="flex justify-between p-5">
+      <SidebarMenuButton
+        asChild
+        isActive={isActive}
+        className="flex justify-between p-5"
+        onClick={handleButtonClick}
+      >
         <Link to={`/chat/${roomId}`}>{title}</Link>
       </SidebarMenuButton>
 

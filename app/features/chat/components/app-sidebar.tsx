@@ -11,6 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "~/components/ui/sidebar";
 import { Spinner } from "~/components/ui/spinner";
 import { useGetUserQuery } from "~/features/auth/hooks/use-get-user-query";
@@ -23,7 +24,12 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ roomId, ...props }: AppSidebarProps) {
+  const { setOpenMobile } = useSidebar();
   const { data: user } = useGetUserQuery();
+
+  const handleButtonClick = () => {
+    setOpenMobile(false);
+  };
 
   return (
     <Sidebar {...props}>
@@ -33,7 +39,12 @@ export function AppSidebar({ roomId, ...props }: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={false} className="p-5">
+                <SidebarMenuButton
+                  asChild
+                  isActive={false}
+                  className="p-5"
+                  onClick={handleButtonClick}
+                >
                   <Link to="/chat">
                     <MessageCirclePlus />새 채팅
                   </Link>
