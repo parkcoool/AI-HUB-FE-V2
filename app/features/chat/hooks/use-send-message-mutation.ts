@@ -63,19 +63,22 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
         context.client
       );
 
+      // AI 메시지를 캐시에 추가
+      const responseMessage: Message = {
+        messageId: crypto.randomUUID(),
+        role: "assistant",
+        content: "",
+        tokenCount: 0,
+        coinCount: 0,
+        modelId: params.modelId,
+        createdAt: new Date().toISOString(),
+      };
+
+      addMessageCache(ensuredRoomId, responseMessage, context.client);
+
       return new Promise<void>((resolve, reject) => {
         const baseURL = import.meta.env.VITE_API_BASE_URL;
         const url = `${baseURL}/api/v1/messages/send/${ensuredRoomId}`;
-
-        const message: Message = {
-          messageId: crypto.randomUUID(),
-          role: "assistant" as const,
-          content: "",
-          tokenCount: 0,
-          coinCount: 0,
-          modelId: params.modelId,
-          createdAt: new Date().toISOString(),
-        };
 
         // SSE 연결 설정
         const source = new SSE(url, {
@@ -86,20 +89,18 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
         });
 
         // 1) started 이벤트
-        source.addEventListener("started", () => {
-          addMessageCache(ensuredRoomId, message, context.client);
-        });
+        source.addEventListener("started", () => {});
 
         // 2) delta 이벤트
         source.addEventListener("delta", (event: { data: string }) => {
-          message.content += event.data;
+          responseMessage.content += event.data;
           modifyMessageCache(
             ensuredRoomId,
             {
               pageIndex: 0,
               messageIndex: 0,
             },
-            { content: message.content },
+            { content: responseMessage.content },
             context.client
           );
         });
@@ -109,13 +110,13 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
           try {
             const completedData: CompletedEventData = JSON.parse(event.data);
 
-            message.messageId = completedData.aiResponseId;
-            message.tokenCount = completedData.outputTokens;
+            responseMessage.messageId = completedData.aiResponseId;
+            responseMessage.tokenCount = completedData.outputTokens;
 
             modifyMessageCache(
               ensuredRoomId,
               { pageIndex: 0, messageIndex: 0 },
-              message,
+              responseMessage,
               context.client
             );
             modifyMessageCache(
@@ -134,6 +135,7 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
         });
 
         source.addEventListener("error", (event: { data: string }) => {
+          // TODO: 응답 메시지 삭제
           source.close();
           reject(new Error(`SSE connection error: ${event.data || "Unknown error"}`));
         });
