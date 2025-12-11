@@ -87,15 +87,11 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
 
         // 1) started 이벤트
         source.addEventListener("started", () => {
-          console.log("SSE connection started");
-
           addMessageCache(ensuredRoomId, message, context.client);
         });
 
         // 2) delta 이벤트
         source.addEventListener("delta", (event: { data: string }) => {
-          console.log("Delta received:", event.data);
-
           message.content += event.data;
           modifyMessageCache(
             ensuredRoomId,
@@ -110,8 +106,6 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
 
         // 3) completed 이벤트
         source.addEventListener("completed", (event: { data: string }) => {
-          console.log("Message completed:", event.data);
-
           try {
             const completedData: CompletedEventData = JSON.parse(event.data);
 
