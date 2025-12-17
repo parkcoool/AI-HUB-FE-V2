@@ -18,13 +18,18 @@ export function addMessageCache(roomId: string, message: Message, queryClient: Q
   queryClient.cancelQueries({ queryKey: ["list-messages", roomId], exact: true });
 
   queryClient.setQueryData<ListMessagesQueryData>(["list-messages", roomId], (oldData) => {
-    if (!oldData) return oldData;
+    const ensuredOldData: ListMessagesQueryData = oldData ?? { pageParams: [], pages: [] };
+    const firstPage: ListMessagesResponse = ensuredOldData.pages.at(0) ?? {
+      totalPages: 0,
+      content: [],
+      number: 0,
+    };
 
     return {
-      ...oldData,
+      ...ensuredOldData,
       pages: [
-        { ...oldData.pages[0], content: [message, ...oldData.pages[0].content] },
-        ...oldData.pages.slice(1),
+        { ...firstPage, content: [message, ...firstPage.content] },
+        ...ensuredOldData.pages.slice(1),
       ],
     };
   });

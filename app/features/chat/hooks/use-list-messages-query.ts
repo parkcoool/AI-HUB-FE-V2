@@ -4,8 +4,8 @@ import { api } from "~/lib/api";
 
 export interface ListMessagesResponse {
   totalPages: number;
-  totalElements: number;
-  size: number;
+  // totalElements: number;
+  // size: number;
   content: {
     messageId: string;
     role: "user" | "assistant";
@@ -16,27 +16,27 @@ export interface ListMessagesResponse {
     createdAt: string;
   }[];
   number: number;
-  numberOfElements: number;
-  sort: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  };
-  pageable: {
-    offset: number;
-    sort: {
-      empty: boolean;
-      sorted: boolean;
-      unsorted: boolean;
-    };
-    paged: boolean;
-    pageNumber: number;
-    pageSize: number;
-    unpaged: boolean;
-  };
-  first: boolean;
-  last: boolean;
-  empty: boolean;
+  // numberOfElements: number;
+  // sort: {
+  //   empty: boolean;
+  //   sorted: boolean;
+  //   unsorted: boolean;
+  // };
+  // pageable: {
+  //   offset: number;
+  //   sort: {
+  //     empty: boolean;
+  //     sorted: boolean;
+  //     unsorted: boolean;
+  //   };
+  //   paged: boolean;
+  //   pageNumber: number;
+  //   pageSize: number;
+  //   unpaged: boolean;
+  // };
+  // first: boolean;
+  // last: boolean;
+  // empty: boolean;
 }
 
 interface UseListMessagesQueryParams {

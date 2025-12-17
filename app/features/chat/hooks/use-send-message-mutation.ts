@@ -17,11 +17,20 @@ interface SendMessageParams {
   previousResponseId?: string;
 }
 
-interface CompletedEventData {
-  userMessageId: string;
+interface ResponseEventData {
+  type: "response";
+  data: string;
+}
+
+interface UsageEventData {
+  type: "usage";
   aiResponseId: string;
-  inputTokens: number;
-  outputTokens: number;
+  fullContent: string;
+  usage: {
+    input_tokens: number;
+    output_tokens: number;
+    total_tokens: number;
+  };
 }
 
 interface UseSendMessageMutationParams {
@@ -49,19 +58,16 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
       }
 
       // 사용자 메시지를 캐시에 추가
-      addMessageCache(
-        ensuredRoomId,
-        {
-          messageId: crypto.randomUUID(),
-          role: "user",
-          content: params.message,
-          tokenCount: 0,
-          coinCount: 0,
-          modelId: params.modelId,
-          createdAt: new Date().toISOString(),
-        },
-        context.client
-      );
+      const userMessage: Message = {
+        messageId: crypto.randomUUID(),
+        role: "user",
+        content: params.message,
+        tokenCount: 0,
+        coinCount: 0,
+        modelId: params.modelId,
+        createdAt: new Date().toISOString(),
+      };
+      addMessageCache(ensuredRoomId, userMessage, context.client);
 
       // AI 메시지를 캐시에 추가
       const responseMessage: Message = {
@@ -73,7 +79,6 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
         modelId: params.modelId,
         createdAt: new Date().toISOString(),
       };
-
       addMessageCache(ensuredRoomId, responseMessage, context.client);
 
       return new Promise<void>((resolve, reject) => {
@@ -91,27 +96,36 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
         // 1) started 이벤트
         source.addEventListener("started", () => {});
 
-        // 2) delta 이벤트
-        source.addEventListener("delta", (event: { data: string }) => {
-          responseMessage.content += event.data;
-          modifyMessageCache(
-            ensuredRoomId,
-            {
-              pageIndex: 0,
-              messageIndex: 0,
-            },
-            { content: responseMessage.content },
-            context.client
-          );
+        // 2) response 이벤트
+        source.addEventListener("response", (event: { data: string }) => {
+          try {
+            const responseData: ResponseEventData = JSON.parse(event.data);
+
+            responseMessage.content += responseData.data;
+
+            modifyMessageCache(
+              ensuredRoomId,
+              {
+                pageIndex: 0,
+                messageIndex: 0,
+              },
+              { content: responseMessage.content },
+              context.client
+            );
+          } catch (error) {
+            source.close();
+            reject(error);
+          }
         });
 
-        // 3) completed 이벤트
-        source.addEventListener("completed", (event: { data: string }) => {
+        // 3) usage 이벤트
+        source.addEventListener("usage", (event: { data: string }) => {
           try {
-            const completedData: CompletedEventData = JSON.parse(event.data);
+            const completedData: UsageEventData = JSON.parse(event.data);
 
             responseMessage.messageId = completedData.aiResponseId;
-            responseMessage.tokenCount = completedData.outputTokens;
+            responseMessage.tokenCount = completedData.usage.output_tokens;
+            responseMessage.content = completedData.fullContent;
 
             modifyMessageCache(
               ensuredRoomId,
@@ -122,7 +136,7 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
             modifyMessageCache(
               ensuredRoomId,
               { pageIndex: 0, messageIndex: 1 },
-              { messageId: completedData.userMessageId, tokenCount: completedData.inputTokens },
+              { tokenCount: completedData.usage.input_tokens },
               context.client
             );
 
