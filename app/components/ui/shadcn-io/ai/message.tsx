@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { CircleDollarSign } from "lucide-react";
 import type { ComponentProps, HTMLAttributes } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -23,9 +24,8 @@ export type MessageProps = HTMLAttributes<HTMLDivElement> & {
 export const Message = ({ className, from, ...props }: MessageProps) => (
   <div
     className={cn(
-      "group flex w-full items-center justify-end gap-2 py-4",
-      from === "user" ? "is-user" : "is-assistant flex-row-reverse justify-end",
-      "[&>div]:max-w-[80%]",
+      "group flex w-full justify-end gap-2 py-4",
+      from === "user" ? "is-user [&>div]:max-w-[80%]" : "is-assistant flex-row-reverse justify-end",
       className
     )}
     {...props}
@@ -37,7 +37,7 @@ export const MessageContent = ({ children, className, ...props }: MessageContent
     className={cn(
       "flex flex-col gap-2 overflow-hidden rounded-lg px-4 py-3 text-foreground text-sm",
       "group-[.is-user]:bg-primary group-[.is-user]:text-primary-foreground",
-      "group-[.is-assistant]:bg-secondary group-[.is-assistant]:text-foreground",
+      "group-[.is-assistant]:text-foreground",
       className
     )}
     {...props}
@@ -55,3 +55,31 @@ export const MessageAvatar = ({ src, name, className, ...props }: MessageAvatarP
     <AvatarFallback>{name?.slice(0, 2) || "ME"}</AvatarFallback>
   </Avatar>
 );
+export const MessageDetails = ({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      "flex items-center",
+      "group-[.is-user]:justify-end",
+      "group-[.is-assistant]:justify-start",
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </div>
+);
+export type MessageCoinUsageProps = HTMLAttributes<HTMLSpanElement> & {
+  coinUsage: number;
+};
+export const MessageCoinUsage = ({ coinUsage }: MessageCoinUsageProps) => {
+  return (
+    <span className="text-xs text-muted-foreground flex items-center gap-1">
+      <CircleDollarSign size={12} />
+      {coinUsage}
+    </span>
+  );
+};

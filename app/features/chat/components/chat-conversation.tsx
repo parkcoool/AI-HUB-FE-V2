@@ -2,7 +2,13 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import logoSrc from "~/assets/logo.png";
 import { Conversation, ConversationContent } from "~/components/ui/shadcn-io/ai/conversation";
-import { Message, MessageAvatar, MessageContent } from "~/components/ui/shadcn-io/ai/message";
+import {
+  Message,
+  MessageAvatar,
+  MessageCoinUsage,
+  MessageContent,
+  MessageDetails,
+} from "~/components/ui/shadcn-io/ai/message";
 import { Spinner } from "~/components/ui/spinner";
 
 import { useListMessagesQuery } from "../hooks/use-list-messages-query";
@@ -41,7 +47,7 @@ export function ChatConversation({ roomId }: ChatConversationProps) {
               {messages.map((message) => (
                 <div key={message.messageId} className="space-y-4">
                   <Message from={message.role}>
-                    <div className="flex flex-col gap-1 items-end">
+                    <div className="flex flex-col gap-1">
                       {/* 메시지 내용 */}
                       <MessageContent>
                         {message.content.length === 0 ? (
@@ -56,15 +62,21 @@ export function ChatConversation({ roomId }: ChatConversationProps) {
                         )}
                       </MessageContent>
 
-                      {/* 토큰 및 코인 정보 */}
-                      <span className="text-xs text-muted-foreground">
-                        {`${message.tokenCount} 토큰 ㆍ ${message.coinCount} 코인`}
-                      </span>
+                      <MessageDetails>
+                        {/* 코인 사용량 */}
+                        {message.coinCount > 0 && (
+                          <MessageCoinUsage coinUsage={message.coinCount} />
+                        )}
+                      </MessageDetails>
                     </div>
 
                     {/* 보낸 사람 아바타 */}
                     {message.role === "assistant" && (
-                      <MessageAvatar src={logoSrc} name={message.modelId.toString()} />
+                      <MessageAvatar
+                        src={logoSrc}
+                        name={message.modelId.toString()}
+                        className="my-2"
+                      />
                     )}
                   </Message>
                 </div>
