@@ -8,7 +8,7 @@ import { modifyMessageCache } from "../helpers/modify-message-cache";
 
 import type { ListMessagesResponse } from "./use-list-messages-query";
 
-type Message = ListMessagesResponse["content"][number];
+type Message = ListMessagesResponse["content"][number] & { isLoading?: boolean };
 
 interface SendMessageParams {
   message: string;
@@ -78,6 +78,7 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
         coinCount: 0,
         modelId: params.modelId,
         createdAt: new Date().toISOString(),
+        isLoading: true,
       };
       addMessageCache(ensuredRoomId, responseMessage, context.client);
 
@@ -126,6 +127,7 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
             responseMessage.messageId = completedData.aiResponseId;
             responseMessage.tokenCount = completedData.usage.output_tokens;
             responseMessage.content = completedData.fullContent;
+            responseMessage.isLoading = false;
 
             modifyMessageCache(
               ensuredRoomId,

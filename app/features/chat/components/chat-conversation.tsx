@@ -13,6 +13,8 @@ import { Spinner } from "~/components/ui/spinner";
 
 import { useListMessagesQuery } from "../hooks/use-list-messages-query";
 
+import { Typing } from "./typing";
+
 interface ChatConversationProps {
   roomId?: string;
 }
@@ -56,9 +58,13 @@ export function ChatConversation({ roomId }: ChatConversationProps) {
                             <Spinner />
                             <span className="text-muted-foreground text-sm">생각 중...</span>
                           </div>
-                        ) : (
-                          // 일반 메시지일 때
+                        ) : // 일반 메시지일 때
+                        message.role === "user" ? (
                           <p>{message.content}</p>
+                        ) : (
+                          <Typing initial={message.isLoading} speed={message.isLoading ? 40 : 100}>
+                            {message.content}
+                          </Typing>
                         )}
                       </MessageContent>
 

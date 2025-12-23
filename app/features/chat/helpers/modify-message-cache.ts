@@ -4,15 +4,7 @@ import type { ListMessagesResponse } from "../hooks/use-list-messages-query";
 
 type ListMessagesQueryData = InfiniteData<ListMessagesResponse, number>;
 
-interface Message {
-  messageId: string;
-  role: "user" | "assistant";
-  content: string;
-  tokenCount: number;
-  coinCount: number;
-  modelId: number;
-  createdAt: string;
-}
+type Message = ListMessagesResponse["content"][number] & { isLoading?: boolean };
 
 export function modifyMessageCache(
   roomId: string,

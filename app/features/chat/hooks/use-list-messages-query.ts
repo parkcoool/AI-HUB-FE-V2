@@ -65,7 +65,9 @@ export function useListMessagesQuery({ roomId }: UseListMessagesQueryParams) {
       }
     },
     select: (data) => ({
-      pages: data.pages.flatMap((page) => page.content),
+      pages: data.pages
+        .flatMap((page) => page.content)
+        .map((message) => ({ ...message, isLoading: false })),
       pageParams: data.pageParams,
     }),
     refetchOnMount: () => !isSendingMessage,
