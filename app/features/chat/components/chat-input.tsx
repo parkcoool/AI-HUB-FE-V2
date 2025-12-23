@@ -27,9 +27,7 @@ interface ChatInputProps {
 
 export function ChatInput({ isTyping, defaultModel, roomId }: ChatInputProps) {
   const { data: models } = useListModelsQuery();
-  const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessageMutation({
-    roomId: roomId,
-  });
+  const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessageMutation({ roomId });
 
   const [inputValue, setInputValue] = useState("");
   const [selectedModel, setSelectedModel] = useState<Model>(defaultModel ?? models[0]);

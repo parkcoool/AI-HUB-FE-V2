@@ -1,4 +1,4 @@
-import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useMutationState, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 
 import { api } from "~/lib/api";
 
@@ -44,6 +44,12 @@ interface UseListMessagesQueryParams {
 }
 
 export function useListMessagesQuery({ roomId }: UseListMessagesQueryParams) {
+  const mutationStatuses = useMutationState({
+    filters: { mutationKey: ["send-message", roomId], exact: true },
+    select: (mutation) => mutation.state.status,
+  });
+  const isSendingMessage = mutationStatuses.some((status) => status === "pending");
+
   return useSuspenseInfiniteQuery({
     queryKey: ["list-messages", roomId],
     queryFn: async ({ pageParam = 0 }) => {
@@ -62,5 +68,7 @@ export function useListMessagesQuery({ roomId }: UseListMessagesQueryParams) {
       pages: data.pages.flatMap((page) => page.content),
       pageParams: data.pageParams,
     }),
+    refetchOnMount: () => !isSendingMessage,
+    refetchOnWindowFocus: () => !isSendingMessage,
   });
 }

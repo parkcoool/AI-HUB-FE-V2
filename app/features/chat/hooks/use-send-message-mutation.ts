@@ -41,7 +41,7 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
   const navigate = useNavigate();
 
   return useMutation({
-    mutationKey: ["send-message"],
+    mutationKey: ["send-message", roomId],
     mutationFn: async (params: SendMessageParams, context) => {
       let ensuredRoomId = roomId;
 
