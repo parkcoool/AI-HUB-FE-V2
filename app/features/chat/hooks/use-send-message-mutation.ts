@@ -157,5 +157,8 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
         });
       });
     },
+    onSuccess: (_data, _variables, _onMutateResult, context) => {
+      context.client.invalidateQueries({ queryKey: ["balance"] });
+    },
   });
 }
