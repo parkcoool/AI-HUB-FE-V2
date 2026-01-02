@@ -6,6 +6,7 @@ import { useDivHeight } from "../hooks/use-div-height";
 
 import { ChatConversation } from "./chat-conversation";
 import { ChatInput } from "./chat-input";
+import { NewChatConversation } from "./new-chat-conversation";
 
 interface ChatProps {
   roomId?: string;
@@ -16,9 +17,9 @@ export function Chat({ roomId }: ChatProps) {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* 채팅 내용 */}
       <div className="flex flex-1">
-        {roomId !== undefined && (
+        {roomId ? (
+          // 채팅 내용
           <Suspense
             fallback={
               <div className="flex h-full w-full items-center justify-center">
@@ -28,6 +29,9 @@ export function Chat({ roomId }: ChatProps) {
           >
             <ChatConversation roomId={roomId} chatInputHeight={chatInputHeight} />
           </Suspense>
+        ) : (
+          // 새 대화 시작
+          <NewChatConversation />
         )}
       </div>
 

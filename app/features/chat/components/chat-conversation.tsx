@@ -13,6 +13,7 @@ import { Spinner } from "~/components/ui/spinner";
 
 import { useListMessagesQuery } from "../hooks/use-list-messages-query";
 
+import { NewChatConversation } from "./new-chat-conversation";
 import { Typing } from "./typing";
 
 interface ChatConversationProps {
@@ -28,7 +29,7 @@ export function ChatConversation({ roomId, chatInputHeight }: ChatConversationPr
   } = useListMessagesQuery({ roomId });
 
   if (messages.length === 0) {
-    return <div className="m-auto text-muted-foreground">채팅 내용이 여기에 표시됩니다.</div>;
+    return <NewChatConversation />;
   }
 
   return (
