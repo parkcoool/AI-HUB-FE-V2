@@ -19,8 +19,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { Field, FieldLabel } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "~/components/ui/sidebar";
 
 import { useChangeChatRoomTitleMutation } from "../hooks/use-change-chat-room-title-mutation";
@@ -93,30 +93,41 @@ export function ChatRoomMenuItem({
         {/* 제목 수정 다이얼로그 */}
         <Dialog open={showRenameDialog} onOpenChange={setShowRenameDialog}>
           <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>채팅 제목 수정</DialogTitle>
-              <DialogDescription>채팅방의 제목을 수정합니다.</DialogDescription>
-            </DialogHeader>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleChangeTitle();
+              }}
+            >
+              <DialogHeader>
+                <DialogTitle>채팅 제목 수정</DialogTitle>
+                <DialogDescription>채팅방의 제목을 수정합니다.</DialogDescription>
+              </DialogHeader>
 
-            <div className="grid flex-1 gap-2">
-              <Label htmlFor="chat-room-title" className="sr-only">
-                제목
-              </Label>
-              <Input
-                id="chat-room-title"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-              />
-            </div>
+              <div className="grid flex-1 gap-2 py-4">
+                <Field>
+                  <FieldLabel htmlFor="chat-room-title" className="sr-only">
+                    제목
+                  </FieldLabel>
+                  <Input
+                    id="chat-room-title"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                  />
+                </Field>
+              </div>
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">취소</Button>
-              </DialogClose>
-              <Button type="submit" disabled={isSaveDisabled} onClick={handleChangeTitle}>
-                변경 사항 저장
-              </Button>
-            </DialogFooter>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" variant="outline">
+                    취소
+                  </Button>
+                </DialogClose>
+                <Button type="submit" disabled={isSaveDisabled}>
+                  변경 사항 저장
+                </Button>
+              </DialogFooter>
+            </form>
           </DialogContent>
         </Dialog>
       </div>
