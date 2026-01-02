@@ -21,9 +21,8 @@ export function Chat({ roomId }: ChatProps) {
           // 채팅 내용
           <Suspense
             fallback={
-              <div className="flex h-full w-full bg-red-500">
+              <div className="flex h-full w-full">
                 <IndeterminantProgress className="absolute top-0 left-0 right-0 z-10" />
-                로딩 중
               </div>
             }
           >
