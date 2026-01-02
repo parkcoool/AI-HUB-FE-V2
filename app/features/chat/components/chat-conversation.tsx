@@ -17,9 +17,10 @@ import { Typing } from "./typing";
 
 interface ChatConversationProps {
   roomId?: string;
+  chatInputHeight?: number;
 }
 
-export function ChatConversation({ roomId }: ChatConversationProps) {
+export function ChatConversation({ roomId, chatInputHeight }: ChatConversationProps) {
   const {
     data: { pages: messages },
     hasNextPage,
@@ -34,17 +35,23 @@ export function ChatConversation({ roomId }: ChatConversationProps) {
     <div className="flex flex-1">
       {messages.length > 0 && (
         <Conversation className="flex flex-1">
-          <ConversationContent>
+          <ConversationContent
+            id="scrollableDiv"
+            className="flex flex-col-reverse h-[calc(100vh-64px)] overflow-auto"
+          >
             <InfiniteScroll
               dataLength={messages.length}
               className="flex flex-col-reverse"
               next={fetchNextPage}
               hasMore={hasNextPage}
+              inverse
               loader={
                 <div className="flex flex-1 justify-center">
                   <Spinner className="m-4 size-10" />
                 </div>
               }
+              scrollableTarget="scrollableDiv"
+              style={{ paddingBottom: chatInputHeight }}
             >
               {messages.map((message) => (
                 <div key={message.messageId} className="space-y-4">
