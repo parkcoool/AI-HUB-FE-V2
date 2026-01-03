@@ -38,7 +38,7 @@ export function ChatConversation({ roomId, chatInputHeight }: ChatConversationPr
         {messages.length > 0 ? (
           <Conversation className="flex flex-1">
             <ConversationContent
-              id="scrollableDiv"
+              id="conversation-content"
               className="flex flex-col-reverse h-[calc(100vh-64px)] overflow-auto"
             >
               <InfiniteScroll
@@ -52,7 +52,7 @@ export function ChatConversation({ roomId, chatInputHeight }: ChatConversationPr
                     <Spinner className="m-4 size-10" />
                   </div>
                 }
-                scrollableTarget="scrollableDiv"
+                scrollableTarget="conversation-content"
                 style={{ paddingBottom: chatInputHeight }}
               >
                 {messages.map((message) => (

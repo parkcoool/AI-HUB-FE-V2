@@ -1,3 +1,7 @@
+import InfiniteScroll from "react-infinite-scroll-component";
+
+import { Spinner } from "~/components/ui/spinner";
+
 import { useListChatRoomsQuery } from "../hooks/use-list-chat-rooms-query";
 
 import { ChatRoomMenuItem } from "./chat-room-menu-item";
@@ -7,12 +11,26 @@ interface ChatRoomListProps {
 }
 
 export function ChatRoomList({ roomId }: ChatRoomListProps) {
-  // TODO: 페이징 처리
-  const { data: chatRooms } = useListChatRoomsQuery({});
+  const {
+    data: { pages: chatRooms },
+    hasNextPage,
+    fetchNextPage,
+  } = useListChatRoomsQuery();
 
   return (
-    <>
-      {chatRooms?.content.map((chatRoom) => (
+    <InfiniteScroll
+      dataLength={chatRooms.length}
+      className="flex flex-col"
+      next={fetchNextPage}
+      hasMore={hasNextPage}
+      loader={
+        <div className="flex flex-1 justify-center">
+          <Spinner className="m-4 size-6" />
+        </div>
+      }
+      scrollableTarget="app-sidebar-content"
+    >
+      {chatRooms.map((chatRoom) => (
         <ChatRoomMenuItem
           title={chatRoom.title}
           roomId={chatRoom.roomId}
@@ -20,6 +38,6 @@ export function ChatRoomList({ roomId }: ChatRoomListProps) {
           isActive={roomId === chatRoom.roomId}
         />
       ))}
-    </>
+    </InfiniteScroll>
   );
 }

@@ -33,7 +33,7 @@ export function AppSidebar({ roomId, ...props }: AppSidebarProps) {
 
   return (
     <Sidebar {...props}>
-      <SidebarContent>
+      <SidebarContent id="app-sidebar-content">
         {/* 내비게이션 메뉴 */}
         <SidebarGroup>
           <SidebarGroupContent>
