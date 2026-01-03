@@ -23,28 +23,29 @@ import type { Attachment, Model } from "../types";
 
 interface ChatInputProps {
   isTyping: boolean;
-  defaultModel?: Model;
   roomId?: string;
   onFileUpload: () => void;
   attachments: Attachment[];
   clearAttachments: () => void;
   removeAttachment: (fileId: string) => void;
+  selectedModel: Model;
+  setSelectedModel: (model: Model) => void;
 }
 
 export function ChatInput({
   isTyping,
-  defaultModel,
   roomId,
   onFileUpload,
   attachments = [],
   clearAttachments,
   removeAttachment,
+  selectedModel,
+  setSelectedModel,
 }: ChatInputProps) {
   const { data: models } = useListModelsQuery();
   const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessageMutation({ roomId });
 
   const [inputValue, setInputValue] = useState("");
-  const [selectedModel, setSelectedModel] = useState<Model>(defaultModel ?? models[0]);
 
   // 전송 비활성화 여부
   const isSubmitDisabled =

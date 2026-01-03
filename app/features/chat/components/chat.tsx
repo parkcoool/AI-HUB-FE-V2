@@ -1,8 +1,10 @@
-import { Suspense, useCallback } from "react";
+import { Suspense, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 import { useAttachments } from "../hooks/use-attachments";
 import { useDivHeight } from "../hooks/use-div-height";
+import { useListModelsQuery } from "../hooks/use-list-models-query";
+import type { Model } from "../types";
 
 import { ChatConversation } from "./chat-conversation";
 import { ChatInput } from "./chat-input";
@@ -14,12 +16,15 @@ interface ChatProps {
 }
 
 export function Chat({ roomId }: ChatProps) {
+  const { data: models } = useListModelsQuery();
+
   const { height: chatInputHeight, ref: chatInputRef } = useDivHeight();
   const { attachments, addFile, removeAttachment, clearAttachments } = useAttachments();
+  const [selectedModel, setSelectedModel] = useState<Model>(models[0]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
-      addFile(file);
+      addFile(file, selectedModel.modelId);
     });
   }, []);
 
@@ -79,6 +84,8 @@ export function Chat({ roomId }: ChatProps) {
           attachments={attachments}
           clearAttachments={clearAttachments}
           removeAttachment={removeAttachment}
+          selectedModel={selectedModel}
+          setSelectedModel={setSelectedModel}
         />
       </div>
     </div>
