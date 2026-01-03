@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const ServerErrorCodeSchema = z.enum([
+  "INTERNAL_SERVER_ERROR",
   "AUTHENTICATION_FAILED",
   "VALIDATION_ERROR",
   "INSUFFICIENT_BALANCE",

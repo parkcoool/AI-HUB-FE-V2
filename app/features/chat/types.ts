@@ -30,3 +30,9 @@ export interface Model {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Attachment {
+  file: File;
+  fileId: string;
+  isUploaded: boolean;
+}

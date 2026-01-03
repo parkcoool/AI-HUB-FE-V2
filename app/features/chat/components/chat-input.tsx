@@ -17,15 +17,25 @@ import {
 
 import { useListModelsQuery } from "../hooks/use-list-models-query";
 import { useSendMessageMutation } from "../hooks/use-send-message-mutation";
-import type { Model } from "../types";
+import type { Attachment, Model } from "../types";
 
 interface ChatInputProps {
   isTyping: boolean;
   defaultModel?: Model;
   roomId?: string;
+  onFileUpload?: () => void;
+  attachments?: Attachment[];
+  clearAttachments?: () => void;
 }
 
-export function ChatInput({ isTyping, defaultModel, roomId }: ChatInputProps) {
+export function ChatInput({
+  isTyping,
+  defaultModel,
+  roomId,
+  onFileUpload,
+  attachments = [],
+  clearAttachments,
+}: ChatInputProps) {
   const { data: models } = useListModelsQuery();
   const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessageMutation({ roomId });
 
@@ -42,10 +52,12 @@ export function ChatInput({ isTyping, defaultModel, roomId }: ChatInputProps) {
 
     sendMessage({ message: inputValue, modelId: selectedModel.modelId });
     setInputValue("");
+    clearAttachments?.();
   };
 
   return (
     <PromptInput onSubmit={handleSubmit}>
+      {/* TODO: attachments 표시 */}
       <PromptInputTextarea
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
@@ -55,7 +67,7 @@ export function ChatInput({ isTyping, defaultModel, roomId }: ChatInputProps) {
       <PromptInputToolbar>
         <PromptInputTools>
           {/* 첨부 파일 */}
-          <PromptInputButton disabled={isTyping}>
+          <PromptInputButton disabled={isTyping} onClick={onFileUpload} type="button">
             <PaperclipIcon size={16} />
           </PromptInputButton>
 
