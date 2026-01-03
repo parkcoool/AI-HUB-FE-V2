@@ -13,8 +13,7 @@ type Message = ListMessagesResponse["content"][number] & { isLoading?: boolean }
 interface SendMessageParams {
   message: string;
   modelId: number;
-  fileId?: string;
-  previousResponseId?: string;
+  files?: { id: string; type: "image" }[];
 }
 
 interface ResponseEventData {

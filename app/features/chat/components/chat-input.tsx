@@ -58,7 +58,11 @@ export function ChatInput({
     e.preventDefault();
     if (isSubmitDisabled) return;
 
-    sendMessage({ message: inputValue, modelId: selectedModel.modelId });
+    sendMessage({
+      message: inputValue,
+      modelId: selectedModel.modelId,
+      files: attachments.map((att) => ({ id: att.fileId, type: "image" })),
+    });
     setInputValue("");
     clearAttachments?.();
   };
