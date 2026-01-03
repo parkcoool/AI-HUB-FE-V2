@@ -15,7 +15,7 @@ interface ChatProps {
 
 export function Chat({ roomId }: ChatProps) {
   const { height: chatInputHeight, ref: chatInputRef } = useDivHeight();
-  const { attachments, addFile, clearAttachments } = useAttachments();
+  const { attachments, addFile, removeAttachment, clearAttachments } = useAttachments();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
@@ -78,6 +78,7 @@ export function Chat({ roomId }: ChatProps) {
           onFileUpload={open}
           attachments={attachments}
           clearAttachments={clearAttachments}
+          removeAttachment={removeAttachment}
         />
       </div>
     </div>

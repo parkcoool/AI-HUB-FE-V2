@@ -27,7 +27,10 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Textarea } from "~/components/ui/textarea";
+import type { Attachment } from "~/features/chat/types";
 import { cn } from "~/lib/utils";
+
+import { Spinner } from "../../spinner";
 export type PromptInputProps = HTMLAttributes<HTMLFormElement>;
 export type ChatStatus = "submitted" | "streaming" | "error" | "ready";
 export const PromptInput = ({ className, ...props }: PromptInputProps) => (
@@ -173,3 +176,44 @@ export const PromptInputModelSelectValue = ({
   className,
   ...props
 }: PromptInputModelSelectValueProps) => <SelectValue className={cn(className)} {...props} />;
+export type PromptInputAttachmentsProps = HTMLAttributes<HTMLDivElement>;
+export const PromptInputAttachments = ({ className, ...props }: PromptInputAttachmentsProps) => (
+  <div className={cn("flex items-center gap-2 p-2", className)} {...props} />
+);
+export type PromptInputAttachmentProps = HTMLAttributes<HTMLDivElement> & {
+  attachment: Attachment;
+  onRemove: (attachment: Attachment) => void;
+};
+export const PromptInputAttachment = ({
+  className,
+  attachment,
+  onRemove,
+  ...props
+}: PromptInputAttachmentProps) => {
+  return (
+    <div
+      className={cn("flex items-center rounded-md bg-secondary/50 px-2 py-1 text-sm", className)}
+      {...props}
+    >
+      <img
+        src={URL.createObjectURL(attachment.file)}
+        alt={attachment.file.name}
+        className="mr-2 h-6 w-6 rounded"
+      />
+      <span className="truncate pr-2">{attachment.file.name}</span>
+      {attachment.isUploaded ? (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="opacity-70 hover:opacity-100"
+          onClick={() => onRemove(attachment)}
+          type="button"
+        >
+          <XIcon className="size-4" />
+        </Button>
+      ) : (
+        <Spinner className="size-4" />
+      )}
+    </div>
+  );
+};

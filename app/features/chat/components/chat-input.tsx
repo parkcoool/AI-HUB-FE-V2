@@ -13,6 +13,8 @@ import {
   PromptInputModelSelectContent,
   PromptInputModelSelectItem,
   PromptInputSubmit,
+  PromptInputAttachment,
+  PromptInputAttachments,
 } from "~/components/ui/shadcn-io/ai/prompt-input";
 
 import { useListModelsQuery } from "../hooks/use-list-models-query";
@@ -23,9 +25,10 @@ interface ChatInputProps {
   isTyping: boolean;
   defaultModel?: Model;
   roomId?: string;
-  onFileUpload?: () => void;
-  attachments?: Attachment[];
-  clearAttachments?: () => void;
+  onFileUpload: () => void;
+  attachments: Attachment[];
+  clearAttachments: () => void;
+  removeAttachment: (fileId: string) => void;
 }
 
 export function ChatInput({
@@ -35,6 +38,7 @@ export function ChatInput({
   onFileUpload,
   attachments = [],
   clearAttachments,
+  removeAttachment,
 }: ChatInputProps) {
   const { data: models } = useListModelsQuery();
   const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessageMutation({ roomId });
@@ -43,7 +47,11 @@ export function ChatInput({
   const [selectedModel, setSelectedModel] = useState<Model>(defaultModel ?? models[0]);
 
   // 전송 비활성화 여부
-  const isSubmitDisabled = !inputValue.trim() || isTyping || isSendingMessage;
+  const isSubmitDisabled =
+    !inputValue.trim() ||
+    isTyping ||
+    isSendingMessage ||
+    attachments.some((attachment) => !attachment.isUploaded);
 
   // 메시지 전송 핸들러
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,13 +65,28 @@ export function ChatInput({
 
   return (
     <PromptInput onSubmit={handleSubmit}>
-      {/* TODO: attachments 표시 */}
+      {/* 첨부 파일 */}
+      {attachments.length > 0 && (
+        <PromptInputAttachments>
+          {attachments.map((attachment) => (
+            <PromptInputAttachment
+              key={attachment.fileId}
+              attachment={attachment}
+              onRemove={(attachment) => removeAttachment(attachment.fileId)}
+            />
+          ))}
+        </PromptInputAttachments>
+      )}
+
+      {/* 입력창 */}
       <PromptInputTextarea
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         placeholder="무엇이든 물어보세요..."
         disabled={isTyping}
       />
+
+      {/* 툴바 */}
       <PromptInputToolbar>
         <PromptInputTools>
           {/* 첨부 파일 */}
