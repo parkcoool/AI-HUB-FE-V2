@@ -1,4 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component";
+import Markdown from "react-markdown";
 
 import logoSrc from "~/assets/logo.png";
 import { Conversation, ConversationContent } from "~/components/ui/shadcn-io/ai/conversation";
@@ -15,7 +16,6 @@ import { useListMessagesQuery } from "../hooks/use-list-messages-query";
 
 import { IndeterminantProgress } from "./indeterminant-progress";
 import { NewChatConversation } from "./new-chat-conversation";
-import { Typing } from "./typing";
 
 interface ChatConversationProps {
   roomId?: string;
@@ -58,27 +58,22 @@ export function ChatConversation({ roomId, chatInputHeight }: ChatConversationPr
                 {messages.map((message) => (
                   <div key={message.messageId} className="space-y-4">
                     <Message from={message.role}>
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-1 group-[.is-assistant]:w-full">
                         {/* 메시지 내용 */}
-                        <MessageContent>
-                          {message.content.length === 0 ? (
-                            // 답변 생성 중일 때
-                            <div className="flex items-center gap-2">
-                              <Spinner />
-                              <span className="text-muted-foreground text-sm">생각 중...</span>
+                        {message.content.length === 0 ? (
+                          // 답변 생성 중일 때
+                          <div className="flex items-center gap-2 h-8 my-2 px-4">
+                            <Spinner />
+                            <span className="text-muted-foreground text-sm">생각 중...</span>
+                          </div>
+                        ) : (
+                          // 일반 메시지일 때
+                          <MessageContent>
+                            <div className="prose prose-neutral max-w-full prose-p:my-2 prose-code:whitespace-break-spaces group-[.is-user]:prose-invert flex flex-col">
+                              <Markdown>{message.content}</Markdown>
                             </div>
-                          ) : // 일반 메시지일 때
-                          message.role === "user" ? (
-                            <p>{message.content}</p>
-                          ) : (
-                            <Typing
-                              initial={message.isLoading}
-                              speed={message.isLoading ? 40 : 100}
-                            >
-                              {message.content}
-                            </Typing>
-                          )}
-                        </MessageContent>
+                          </MessageContent>
+                        )}
 
                         <MessageDetails>
                           {/* 코인 사용량 */}

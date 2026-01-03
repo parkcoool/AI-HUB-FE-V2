@@ -35,8 +35,8 @@ export type MessageContentProps = HTMLAttributes<HTMLDivElement>;
 export const MessageContent = ({ children, className, ...props }: MessageContentProps) => (
   <div
     className={cn(
-      "flex flex-col gap-2 overflow-hidden rounded-lg px-4 py-3 text-foreground text-sm",
-      "group-[.is-user]:bg-primary group-[.is-user]:text-primary-foreground",
+      "flex flex-col gap-2 overflow-hidden rounded-lg px-4",
+      "group-[.is-user]:py-2 group-[.is-user]:bg-primary group-[.is-user]:text-primary-foreground",
       "group-[.is-assistant]:text-foreground",
       className
     )}
@@ -77,7 +77,7 @@ export type MessageCoinUsageProps = HTMLAttributes<HTMLSpanElement> & {
 };
 export const MessageCoinUsage = ({ coinUsage }: MessageCoinUsageProps) => {
   return (
-    <span className="text-xs text-muted-foreground flex items-center gap-1">
+    <span className="text-xs text-muted-foreground flex items-center gap-1 group-[.is-assistant]:px-4">
       <CircleDollarSign size={12} />
       {coinUsage}
     </span>
