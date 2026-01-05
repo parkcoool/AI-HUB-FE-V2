@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useLocation, useNavigate } from "react-router";
 
 import { api } from "~/lib/api";
 
@@ -9,6 +10,9 @@ interface UseChangeChatRoomTitleMutationParams {
 }
 
 export function useDeleteChatRoomMutation({ roomId }: UseChangeChatRoomTitleMutationParams) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return useMutation({
     mutationKey: ["delete-chat-room", roomId],
     mutationFn: async () => {
@@ -18,6 +22,7 @@ export function useDeleteChatRoomMutation({ roomId }: UseChangeChatRoomTitleMuta
     // TODO: useListChatRoomsQuery 페이지네이션 적용 후 optimistic update 적용
     onSuccess: async (_data, _variables, _onMutateResult, context) => {
       context.client.invalidateQueries({ queryKey: ["chat-rooms"] });
+      if (location.pathname === `/chat/${roomId}`) navigate("/chat");
     },
   });
 }
