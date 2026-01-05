@@ -79,7 +79,9 @@ export const MessageCoinUsage = ({ coinUsage }: MessageCoinUsageProps) => {
   return (
     <span className="text-xs text-muted-foreground flex items-center gap-1 group-[.is-assistant]:px-4">
       <CircleDollarSign size={12} />
-      {coinUsage}
+      {coinUsage.toLocaleString(undefined, {
+        maximumFractionDigits: 2,
+      })}
     </span>
   );
 };

@@ -45,7 +45,11 @@ export function Balance() {
   return (
     <div className="flex items-center justify-center gap-2 text-muted-foreground">
       <CircleDollarSign size={16} />
-      <p>{displayValue.toFixed(3)}</p>
+      <p>
+        {displayValue.toLocaleString(undefined, {
+          maximumFractionDigits: 2,
+        })}
+      </p>
     </div>
   );
 }

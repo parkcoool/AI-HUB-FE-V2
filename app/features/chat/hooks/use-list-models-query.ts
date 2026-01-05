@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { api } from "~/lib/api";
+import { BALANCE_MULTIPLIER } from "~/shared/constants";
 
 type ListModelsResponse = {
   modelId: number;
@@ -19,7 +20,12 @@ export function useListModelsQuery() {
     queryKey: ["models"],
     queryFn: async () => {
       const response = await api.get<ListModelsResponse>("/models");
-      return response.data;
+      const data = response.data.map((model) => ({
+        ...model,
+        inputPricePer1m: model.inputPricePer1m * BALANCE_MULTIPLIER,
+        outputPricePer1m: model.outputPricePer1m * BALANCE_MULTIPLIER,
+      }));
+      return data;
     },
     staleTime: Infinity,
   });

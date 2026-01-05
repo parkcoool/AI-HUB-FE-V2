@@ -124,11 +124,15 @@ export function ChatInput({
                     <div className="ml-auto flex items-center space-x-1 text-xs text-muted-foreground">
                       <span className="flex items-center gap-0.5">
                         <ArrowUp />
-                        {model.inputPricePer1m}
+                        {model.inputPricePer1m.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })}
                       </span>
                       <span className="flex items-center gap-0.5">
                         <ArrowDown />
-                        {model.outputPricePer1m}
+                        {model.outputPricePer1m.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })}
                       </span>
                     </div>
                   </div>

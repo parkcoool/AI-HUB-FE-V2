@@ -1,6 +1,7 @@
 import { useMutationState, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 
 import { api } from "~/lib/api";
+import { BALANCE_MULTIPLIER } from "~/shared/constants";
 
 export interface ListMessagesResponse {
   totalPages: number;
@@ -56,7 +57,11 @@ export function useListMessagesQuery({ roomId }: UseListMessagesQueryParams) {
       const response = await api.get<ListMessagesResponse>(`/messages/page/${roomId}`, {
         params: { page: pageParam, sort: "createdAt,desc" },
       });
-      return response.data;
+      const content = response.data.content.map((message) => ({
+        ...message,
+        coinCount: message.coinCount * BALANCE_MULTIPLIER,
+      }));
+      return { ...response.data, content };
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
