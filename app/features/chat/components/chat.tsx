@@ -1,6 +1,8 @@
 import { Suspense, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
+import { IndeterminantProgress } from "~/shared/components/indeterminant-progress";
+
 import { useAttachments } from "../hooks/use-attachments";
 import { useDivHeight } from "../hooks/use-div-height";
 import { useListModelsQuery } from "../hooks/use-list-models-query";
@@ -8,7 +10,6 @@ import type { Model } from "../types";
 
 import { ChatConversation } from "./chat-conversation";
 import { ChatInput } from "./chat-input";
-import { IndeterminantProgress } from "./indeterminant-progress";
 import { NewChatConversation } from "./new-chat-conversation";
 
 interface ChatProps {

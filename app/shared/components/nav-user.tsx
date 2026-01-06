@@ -1,6 +1,7 @@
 "use client";
 
 import { ChartSpline, ChevronsUpDown, CircleUser, LogOut } from "lucide-react";
+import { Link } from "react-router";
 
 import {
   DropdownMenu,
@@ -25,8 +26,12 @@ interface NavUserProps {
 }
 
 export function NavUser({ username, email }: NavUserProps) {
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const { mutate: logout } = useLogoutMutation();
+
+  const handleSelect = () => {
+    setOpenMobile(false);
+  };
 
   return (
     <SidebarMenu>
@@ -52,10 +57,12 @@ export function NavUser({ username, email }: NavUserProps) {
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <CircleUser />
-                <DropdownMenuLabel>계정</DropdownMenuLabel>
-              </DropdownMenuItem>
+              <Link to="/profile">
+                <DropdownMenuItem onSelect={handleSelect}>
+                  <CircleUser />
+                  <DropdownMenuLabel>계정</DropdownMenuLabel>
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuItem>
                 <ChartSpline />
                 <DropdownMenuLabel>사용량</DropdownMenuLabel>

@@ -14,7 +14,7 @@ import { Spinner } from "~/components/ui/spinner";
 
 import { useListMessagesQuery } from "../hooks/use-list-messages-query";
 
-import { IndeterminantProgress } from "./indeterminant-progress";
+import { IndeterminantProgress } from "../../../shared/components/indeterminant-progress";
 import { NewChatConversation } from "./new-chat-conversation";
 
 interface ChatConversationProps {

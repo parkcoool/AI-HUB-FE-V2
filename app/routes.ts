@@ -6,6 +6,10 @@ export default [
 
   // Auth Protected Layout
   layout("features/auth/layouts/auth-protected.tsx", [
-    route("chat/:roomId?", "features/chat/routes/chat-room.tsx"),
+    // Sidebar Layout
+    layout("shared/layouts/sidebar-layout.tsx", [
+      route("chat/:roomId?", "features/chat/routes/chat-room.tsx"),
+      route("profile", "features/user/routes/profile.tsx"),
+    ]),
   ]),
 ] satisfies RouteConfig;

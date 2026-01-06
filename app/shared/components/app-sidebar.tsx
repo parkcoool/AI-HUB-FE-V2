@@ -15,8 +15,8 @@ import {
 } from "~/components/ui/sidebar";
 import { Spinner } from "~/components/ui/spinner";
 import { useGetUserQuery } from "~/features/auth/hooks/use-get-user-query";
+import { ChatRoomList } from "~/features/chat/components/chat-room-list";
 
-import { ChatRoomList } from "./chat-room-list";
 import { NavUser } from "./nav-user";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
