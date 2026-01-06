@@ -95,6 +95,7 @@ function Content() {
 
         <div className="flex flex-col gap-2 absolute bottom-4 left-0 right-0">
           <Button
+            type="button"
             variant="ghost"
             disabled={isUpdatingProfile || isDeletingUser}
             className="flex-1 gap-1 text-muted-foreground"
