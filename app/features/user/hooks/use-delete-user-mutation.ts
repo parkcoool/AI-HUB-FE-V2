@@ -12,7 +12,6 @@ export function useDeleteUserMutation() {
       return response.data;
     },
     onSuccess: async (_data, _variables, _onMutateResult, context) => {
-      context.client.invalidateQueries({ queryKey: ["profile"] });
       context.client.invalidateQueries({ queryKey: ["get-user"] });
     },
   });

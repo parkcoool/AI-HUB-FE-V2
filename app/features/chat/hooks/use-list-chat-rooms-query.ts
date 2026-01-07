@@ -56,5 +56,7 @@ export function useListChatRoomsQuery() {
       pages: data.pages.flatMap((page) => page.content),
       pageParams: data.pageParams,
     }),
+    refetchOnWindowFocus: false,
+    meta: { persist: true },
   });
 }

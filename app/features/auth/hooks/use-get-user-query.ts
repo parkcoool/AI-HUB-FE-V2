@@ -17,7 +17,9 @@ export const getUserQueryOptions = queryOptions({
     return response.data;
   },
   retry: false,
-  staleTime: Infinity,
+  refetchOnWindowFocus: (query) => query.state.data !== undefined,
+  refetchOnMount: false,
+  meta: { persist: true },
 });
 
 export function useGetUserQuery() {

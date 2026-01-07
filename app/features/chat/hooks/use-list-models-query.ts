@@ -28,5 +28,6 @@ export function useListModelsQuery() {
       return data;
     },
     staleTime: Infinity,
+    meta: { persist: true },
   });
 }

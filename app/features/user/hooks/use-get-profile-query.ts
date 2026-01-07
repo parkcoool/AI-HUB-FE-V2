@@ -12,11 +12,12 @@ type GetProfileResponse = {
 
 export function useGetProfileQuery() {
   return useSuspenseQuery({
-    queryKey: ["profile"],
+    queryKey: ["get-user"],
     queryFn: async () => {
       const response = await api.get<GetProfileResponse>("/users/me");
       return response.data;
     },
     staleTime: Infinity,
+    meta: { persist: true },
   });
 }

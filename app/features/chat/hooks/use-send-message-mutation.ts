@@ -2,6 +2,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { SSE } from "sse.js";
 
+import type { GetBalanceResponse } from "~/features/wallet/hooks/use-balance-query";
+import { BALANCE_MULTIPLIER } from "~/shared/constants";
+
 import { addMessageCache } from "../helpers/add-message-cache";
 import { createChatRoom } from "../helpers/create-chat-room";
 import { modifyMessageCache } from "../helpers/modify-message-cache";
@@ -30,6 +33,8 @@ interface UsageEventData {
     output_tokens: number;
     total_tokens: number;
   };
+  inputCoinUsage: number;
+  outputCoinUsage: number;
 }
 
 interface UseSendMessageMutationParams {
@@ -81,7 +86,7 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
       };
       addMessageCache(ensuredRoomId, responseMessage, context.client);
 
-      return new Promise<void>((resolve, reject) => {
+      return new Promise<UsageEventData>((resolve, reject) => {
         const baseURL = import.meta.env.VITE_API_BASE_URL;
         const url = `${baseURL}/api/v1/messages/send/${ensuredRoomId}`;
 
@@ -122,10 +127,13 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
         source.addEventListener("usage", (event: { data: string }) => {
           try {
             const completedData: UsageEventData = JSON.parse(event.data);
+            completedData.inputCoinUsage *= BALANCE_MULTIPLIER;
+            completedData.outputCoinUsage *= BALANCE_MULTIPLIER;
 
             responseMessage.messageId = completedData.aiResponseId;
             responseMessage.tokenCount = completedData.usage.output_tokens;
             responseMessage.content = completedData.fullContent;
+            responseMessage.coinCount = completedData.outputCoinUsage;
             responseMessage.isLoading = false;
 
             modifyMessageCache(
@@ -137,11 +145,14 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
             modifyMessageCache(
               ensuredRoomId,
               { pageIndex: 0, messageIndex: 1 },
-              { tokenCount: completedData.usage.input_tokens },
+              {
+                tokenCount: completedData.usage.input_tokens,
+                coinCount: completedData.inputCoinUsage,
+              },
               context.client
             );
 
-            resolve();
+            resolve(completedData);
           } catch (error) {
             reject(error);
           } finally {
@@ -156,8 +167,15 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
         });
       });
     },
-    onSuccess: (_data, _variables, _onMutateResult, context) => {
-      context.client.invalidateQueries({ queryKey: ["balance"] });
+    onSuccess: (data, _variables, _onMutateResult, context) => {
+      context.client.setQueryData(["balance"], (oldData: GetBalanceResponse) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          balance: oldData.balance - data.inputCoinUsage - data.outputCoinUsage,
+        };
+      });
     },
   });
 }

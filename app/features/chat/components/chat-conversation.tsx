@@ -11,10 +11,10 @@ import {
   MessageDetails,
 } from "~/components/ui/shadcn-io/ai/message";
 import { Spinner } from "~/components/ui/spinner";
+import { IndeterminantProgress } from "~/shared/components/indeterminant-progress";
 
 import { useListMessagesQuery } from "../hooks/use-list-messages-query";
 
-import { IndeterminantProgress } from "../../../shared/components/indeterminant-progress";
 import { NewChatConversation } from "./new-chat-conversation";
 
 interface ChatConversationProps {

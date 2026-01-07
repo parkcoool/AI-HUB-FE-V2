@@ -1,30 +1,22 @@
-import { Suspense } from "react";
-import { Navigate, Outlet } from "react-router";
+import { Outlet, redirect } from "react-router";
 
 import { AppError } from "~/lib/error";
+import { queryClient } from "~/root";
 
-import { AuthLoading } from "../components/auth-loading";
-import { useGetUserQuery } from "../hooks/use-get-user-query";
+import { getUserQueryOptions } from "../hooks/use-get-user-query";
 
-import type { Route } from "./+types/auth-protected";
-
-function Content() {
-  const { error } = useGetUserQuery();
-  if (error) throw error;
-  return <Outlet />;
-}
-
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  if (error instanceof AppError && error.code === "TOKEN_REFRESH_FAILED") {
-    return <Navigate to="/" replace />;
+export async function clientLoader() {
+  try {
+    const user = await queryClient.ensureQueryData(getUserQueryOptions);
+    return user;
+  } catch (error) {
+    if (error instanceof AppError && error.code === "TOKEN_REFRESH_FAILED") {
+      return redirect("/");
+    }
+    throw error;
   }
-  throw error;
 }
 
 export default function AuthProtectedLayout() {
-  return (
-    <Suspense fallback={<AuthLoading />}>
-      <Content />
-    </Suspense>
-  );
+  return <Outlet />;
 }

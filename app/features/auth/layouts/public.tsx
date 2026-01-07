@@ -1,37 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
-import { Navigate, Outlet } from "react-router";
+import { Outlet, redirect } from "react-router";
 
 import { AppError } from "~/lib/error";
+import { queryClient } from "~/root";
 
-import { AuthLoading } from "../components/auth-loading";
 import { getUserQueryOptions } from "../hooks/use-get-user-query";
 
-import type { Route } from "./+types/public";
-
-function Content() {
-  const { data: user, isLoading, error } = useQuery(getUserQueryOptions);
-
-  if (isLoading) return <AuthLoading />;
-
-  if (error) {
+export async function clientLoader() {
+  try {
+    await queryClient.ensureQueryData(getUserQueryOptions);
+    return redirect("/chat");
+  } catch (error) {
     if (error instanceof AppError && error.code === "TOKEN_REFRESH_FAILED") {
-      return <Outlet />;
+      return null;
     }
     throw error;
   }
-
-  if (user) return <Navigate to="/chat" replace />;
-
-  return <Outlet />;
-}
-
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  if (error instanceof AppError && error.code === "TOKEN_REFRESH_FAILED") {
-    return <Outlet />;
-  }
-  throw error;
 }
 
 export default function PublicLayout() {
-  return <Content />;
+  return <Outlet />;
 }

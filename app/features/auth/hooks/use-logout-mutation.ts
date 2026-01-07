@@ -26,6 +26,7 @@ export function useLogoutMutation() {
     },
     onSuccess: async (_data, _variables, _onMutateResult, context) => {
       context.client.invalidateQueries({ queryKey: ["get-user"] });
+      location.href = "/";
     },
   });
 }

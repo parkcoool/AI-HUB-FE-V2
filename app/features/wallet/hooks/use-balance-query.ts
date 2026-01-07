@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { api } from "~/lib/api";
 import { BALANCE_MULTIPLIER } from "~/shared/constants";
 
-interface GetBalanceResponse {
+export interface GetBalanceResponse {
   balance: number;
 }
 
@@ -16,5 +16,6 @@ export function useBalanceQuery() {
       return response.data;
     },
     select: (data) => data.balance,
+    meta: { persist: true },
   });
 }
