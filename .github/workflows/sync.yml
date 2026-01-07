@@ -1,0 +1,32 @@
+name: Synchronize to forked repo
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  sync:
+    name: Sync forked repo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.TOKEN }}
+          fetch-depth: 0
+          ref: dev
+
+      - name: Add remote-url
+        run: |
+          git remote add forked-repo https://github.com/${{ secrets.NAME }}/${{ secrets.FORKED_REPO }}.git
+          git config user.name ${{ secrets.NAME }}
+          git config user.email ${{ secrets.EMAIL }}
+
+      - name: Push changes to forked-repo
+        run: |
+          git push -f forked-repo dev
+
+      - name: Clean up
+        run: |
+          git remote remove forked-repo
