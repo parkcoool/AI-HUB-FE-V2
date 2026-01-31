@@ -63,10 +63,12 @@ export function NavUser({ username, email }: NavUserProps) {
                   <DropdownMenuLabel>계정</DropdownMenuLabel>
                 </DropdownMenuItem>
               </Link>
-              <DropdownMenuItem>
-                <ChartSpline />
-                <DropdownMenuLabel>사용량</DropdownMenuLabel>
-              </DropdownMenuItem>
+              <Link to="/dashboard">
+                <DropdownMenuItem onSelect={handleSelect}>
+                  <ChartSpline />
+                  <DropdownMenuLabel>사용량 및 요금</DropdownMenuLabel>
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onSelect={() => logout()}>

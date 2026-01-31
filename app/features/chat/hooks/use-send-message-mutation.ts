@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { SSE } from "sse.js";
 
-import type { GetBalanceResponse } from "~/features/wallet/hooks/use-balance-query";
+import type { GetBalanceResponse } from "~/features/dashboard/hooks/use-balance-query";
 import { BALANCE_MULTIPLIER } from "~/shared/constants";
 
 import { addMessageCache } from "../helpers/add-message-cache";
@@ -115,7 +115,7 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
                 messageIndex: 0,
               },
               { content: responseMessage.content },
-              context.client
+              context.client,
             );
           } catch (error) {
             source.close();
@@ -140,7 +140,7 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
               ensuredRoomId,
               { pageIndex: 0, messageIndex: 0 },
               responseMessage,
-              context.client
+              context.client,
             );
             modifyMessageCache(
               ensuredRoomId,
@@ -149,7 +149,7 @@ export function useSendMessageMutation({ roomId }: UseSendMessageMutationParams)
                 tokenCount: completedData.usage.input_tokens,
                 coinCount: completedData.inputCoinUsage,
               },
-              context.client
+              context.client,
             );
 
             resolve(completedData);

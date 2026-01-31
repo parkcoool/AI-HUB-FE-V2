@@ -1,7 +1,7 @@
 import { CircleDollarSign } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { useBalanceQuery } from "~/features/wallet/hooks/use-balance-query";
+import { useBalanceQuery } from "~/features/dashboard/hooks/use-balance-query";
 
 export function Balance() {
   const { data: balance } = useBalanceQuery();
