@@ -11,6 +11,7 @@ export default [
       route("chat/:roomId?", "features/chat/routes/chat-room.tsx"),
       route("profile", "features/user/routes/profile.tsx"),
       route("dashboard", "features/dashboard/routes/dashboard.tsx"),
+      route("pricing", "features/pricing/routes/pricing.tsx"),
     ]),
   ]),
 ] satisfies RouteConfig;

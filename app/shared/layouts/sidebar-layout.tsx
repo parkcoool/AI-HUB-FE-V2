@@ -15,7 +15,7 @@ export default function SidebarLayout({ params }: Route.LoaderArgs) {
     <SidebarProvider>
       <AppSidebar roomId={roomId} />
 
-      <SidebarInset>
+      <SidebarInset className="overflow-hidden">
         <header className="h-16 shrink-0 items-center gap-2 border-b px-4 flex sticky top-0 bg-background z-50 justify-between">
           <div>
             <SidebarTrigger className="-ml-1" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChartSpline, ChevronsUpDown, CircleUser, LogOut } from "lucide-react";
+import { ChartSpline, ChevronsUpDown, CircleUser, LogOut, Table } from "lucide-react";
 import { Link } from "react-router";
 
 import {
@@ -66,7 +66,13 @@ export function NavUser({ username, email }: NavUserProps) {
               <Link to="/dashboard">
                 <DropdownMenuItem onSelect={handleSelect}>
                   <ChartSpline />
-                  <DropdownMenuLabel>사용량 및 요금</DropdownMenuLabel>
+                  <DropdownMenuLabel>사용량</DropdownMenuLabel>
+                </DropdownMenuItem>
+              </Link>
+              <Link to="/pricing">
+                <DropdownMenuItem onSelect={handleSelect}>
+                  <Table />
+                  <DropdownMenuLabel>모델 요금표</DropdownMenuLabel>
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuGroup>
